@@ -1,6 +1,6 @@
-## Version: v3.40.0
-## Date: 2021-05-28
-## Update Content: 增加自定义设置京喜工厂拼团瓜分电力的activeId,环境变量为：TUAN_ACTIVEID
+## Version: v3.41.0
+## Date: 2021-06-9
+## Update Content: 增加ZCY01的京东试用相关环境变量，试用脚本是否有效请自测（配置文件不会自动智能替换，需要手动进入面板通过对比工具手动替换）
 
 ## 上面版本号中，如果第2位数字有变化，那么代表增加了新的参数，如果只有第3位数字有变化，仅代表更新了注释，没有增加新的参数，可更新可不更新
 
@@ -166,28 +166,6 @@ ForOtherZoo3=""
 ForOtherZoo4=""
 ForOtherZoo5=""
 ForOtherZoo6=""
-
-################################## 定义jd_city抽奖开关（选填） ##################################
-## 默认false不抽奖，改为true抽奖
-export JD_CITY_EXCHANGE=""
-
-################################## 定义jd_city互助（临时） ##################################
-## 具体填法及要求详见本文件最下方“互助码填法示例”
-MyCity1=""
-MyCity2=""
-MyCity3=""
-MyCity4=""
-MyCity5=""
-MyCity6=""
-MyCityA=""
-MyCityB=""
-
-ForOtherCity1=""
-ForOtherCity2=""
-ForOtherCity3=""
-ForOtherCity4=""
-ForOtherCity5=""
-ForOtherCity6=""
 
 ################################## 定义jd_health互助（临时） ##################################
 ## 具体填法及要求详见本文件最下方“互助码填法示例”
@@ -447,6 +425,30 @@ ForOtherCfd3=""
 ForOtherCfd4=""
 ForOtherCfd5=""
 ForOtherCfd6=""
+
+
+
+################################## 定义jd_try相关参数（选填） ##################################
+
+##控制每次获取商品数量，默认12
+export JD_TRY_PAGE_SIZE=""
+
+##商品分类，以 @ 隔开，示例：家用电器@手机数码@电脑办公@家居家装
+export JD_TRY_CIDS_KEYS=""
+
+##试用类型，以 @ 隔开，示例：免费试用@闪电试
+export JD_TRY_TYPE_KEYS=""
+
+##过滤试用商品关键字，以 @ 隔开(默认内置了很多关键字，建议使用默认)
+export JD_TRY_GOOD_FILTERS=""
+
+##试用商品最低价格
+export JD_TRY_MIN_PRICE=""
+
+##试用商品最多提供数量（过滤垃圾商品）
+export JD_TRY_MAX_SUPPLY_COUNT=""
+
+
 
 
 ################################## 定义京喜工厂开团ID（选填） ##################################
