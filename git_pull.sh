@@ -30,19 +30,7 @@ ScriptsURL=https://hub.fastgit.org/wuzhi04/MyActions.git
 ## 每天次数随机，更新时间随机，更新秒数随机，至少6次，至多12次，大部分为8-10次，符合正态分布。
 function Update_Cron {
   if [ -f ${ListCron} ]; then
-    RanMin=$((${RANDOM} % 60))
-    RanSleep=$((${RANDOM} % 56))
-    RanHourArray[0]=$((${RANDOM} % 3))
-    for ((i=1; i<14; i++)); do
-      j=$(($i - 1))
-      tmp=$((${RANDOM} % 3 + ${RanHourArray[j]} + 2))
-      [[ ${tmp} -lt 24 ]] && RanHourArray[i]=${tmp} || break
-    done
-    RanHour=${RanHourArray[0]}
-    for ((i=1; i<${#RanHourArray[*]}; i++)); do
-      RanHour="${RanHour},${RanHourArray[i]}"
-    done
-    perl -i -pe "s|.+(bash.+git_pull.+log.*)|${RanMin} ${RanHour} \* \* \* sleep ${RanSleep} && \1|" ${ListCron}
+    perl -i -pe "s|.+(bash.+git_pull.+log.*)|2 0-23/1 \* \* \* sleep 5 && \1|" ${ListCron}
     crontab ${ListCron}
   fi
 }
