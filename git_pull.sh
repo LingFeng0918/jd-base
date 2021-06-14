@@ -24,7 +24,7 @@ ContentDropTask=${ShellDir}/drop_task
 SendCount=${ShellDir}/send_count
 isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
 ShellURL=https://hub.fastgit.org/wuzhi04/jd-base
-ScriptsURL=https://hub.fastgit.org/wuzhi04/MyActions
+ScriptsURL=https://ghproxy.com/https://github.com/wuzhi04/MyActions
 
 ## 更新crontab，gitee服务器同一时间限制5个链接，因此每个人更新代码必须错开时间，每次执行git_pull随机生成。
 ## 每天次数随机，更新时间随机，更新秒数随机，至少6次，至多12次，大部分为8-10次，符合正态分布。
