@@ -8,20 +8,17 @@
 
 var express = require('express');
 var session = require('express-session');
-var compression = require('compression');
 var bodyParser = require('body-parser');
 var got = require('got');
 var path = require('path');
 var fs = require('fs');
 var { execSync, exec } = require('child_process');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
 
 var rootPath = path.resolve(__dirname, '..')
 // config.sh 文件所在目录
 var confFile = path.join(rootPath, 'config/config.sh');
-// config.sample.sh 文件所在目录
-var sampleFile = path.join(rootPath, 'sample/config.sample.sh');
+// config.sh.sample 文件所在目录
+var sampleFile = path.join(rootPath, 'sample/config.sh.sample');
 // crontab.list 文件所在目录
 var crontabFile = path.join(rootPath, 'config/crontab.list');
 // config.sh 文件备份目录
@@ -91,7 +88,7 @@ async function step1() {
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'zh-cn',
                 'Referer': 'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wq.jd.com/passport/LoginRedirect?state=' + timeStamp + '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
-                'User-Agent': 'jdapp;android;9.3.5;10;2346663656561603-4353564623932316;network/wifi;model/ONEPLUS A5010;addressid/138709979;aid/2dfceea045ed292a;oaid/;osVer/29;appBuild/86390;partner/jingdong;eufv/1;Mozilla/5.0 (Linux; Android 10; ONEPLUS A5010 Build/QKQ1.191014.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045230 Mobile Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
                 'Host': 'plogin.m.jd.com'
             }
         });
@@ -124,7 +121,7 @@ async function step2() {
                 'Accept': 'application/json, text/plain, */*',
                 'Cookie': cookies,
                 'Referer': 'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=' + timeStamp + '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
-                'User-Agent': 'jdapp;android;9.3.5;10;2346663656561603-4353564623932316;network/wifi;model/ONEPLUS A5010;addressid/138709979;aid/2dfceea045ed292a;oaid/;osVer/29;appBuild/86390;partner/jingdong;eufv/1;Mozilla/5.0 (Linux; Android 10; ONEPLUS A5010 Build/QKQ1.191014.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045230 Mobile Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
                 'Host': 'plogin.m.jd.com',
             }
         });
@@ -162,7 +159,7 @@ async function checkLogin() {
                 'Connection': 'Keep-Alive',
                 'Content-Type': 'application/x-www-form-urlencoded; Charset=UTF-8',
                 'Accept': 'application/json, text/plain, */*',
-                'User-Agent': 'jdapp;android;9.3.5;10;2346663656561603-4353564623932316;network/wifi;model/ONEPLUS A5010;addressid/138709979;aid/2dfceea045ed292a;oaid/;osVer/29;appBuild/86390;partner/jingdong;eufv/1;Mozilla/5.0 (Linux; Android 10; ONEPLUS A5010 Build/QKQ1.191014.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045230 Mobile Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
             }
         });
 
@@ -179,7 +176,7 @@ async function checkLogin() {
 
 
 /**
- * 检查 config.sh 以及 config.sample.sh 文件是否存在
+ * 检查 config.sh 以及 config.sh.sample 文件是否存在
  */
 function checkConfigFile() {
     if (!fs.existsSync(confFile)) {
@@ -187,7 +184,7 @@ function checkConfigFile() {
         process.exit(1);
     }
     if (!fs.existsSync(sampleFile)) {
-        console.error('脚本启动失败，config.sample.sh 文件不存在！');
+        console.error('脚本启动失败，config.sh.sample 文件不存在！');
         process.exit(1);
     }
 }
@@ -290,19 +287,6 @@ function getLastModifyFilePath(dir) {
 
 
 var app = express();
-// gzip压缩
-app.use(compression({ level: 6, filter: shouldCompress }));
-
-function shouldCompress(req, res) {
-    if (req.headers['x-no-compression']) {
-        // don't compress responses with this request header
-        return false;
-    }
-
-    // fallback to standard filter function
-    return compression.filter(req, res);
-}
-
 app.use(session({
     secret: 'secret',
     name: `connect.${Math.random()}`,
@@ -312,16 +296,6 @@ app.use(session({
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-// ttyd proxy
-app.use('/shell', createProxyMiddleware({ 
-    target: 'http://localhost:7681', 
-    ws: true, 
-    changeOrigin: true, 
-    pathRewrite: {
-        '^/shell': '/', 
-    }, 
-}));
 
 /**
  * 登录页面
@@ -344,18 +318,6 @@ app.get('/changepwd', function (request, response) {
         response.redirect('/');
     }
 });
-
-/**
- * terminal
- */
- app.get('/terminal', function (request, response) {
-    if (request.session.loggedin) {
-        response.sendFile(path.join(__dirname + '/public/terminal.html'));
-    } else {
-        response.redirect('/');
-    }
-});
-
 
 /**
  * 获取二维码链接
@@ -515,35 +477,25 @@ app.get('/run', function (request, response) {
 
 app.post('/runCmd', function(request, response) {
     if (request.session.loggedin) {
-        const cmd = `cd ${rootPath};` + request.body.cmd;
+        const cmd = request.body.cmd;
         const delay = request.body.delay || 0;
         // console.log('before exec');
-        // exec maxBuffer 20MB
-        exec(cmd, { maxBuffer: 1024 * 1024 * 20 }, (error, stdout, stderr) => {
+        exec(cmd, (error, stdout, stderr) => {
             // console.log(error, stdout, stderr);
             // 根据传入延时返回数据，有时太快会出问题
             setTimeout(() => {
                 if (error) {
                     console.error(`执行的错误: ${error}`);
-                    response.send({ err: 1, msg: stdout ? `${stdout}${error}` : `${error}` });
-                    return;
+                    response.send({ err: 1, msg: '执行出错！' });
 
-                }
-
-                if (stdout) {
+                } else if (stdout) {
                     // console.log(`stdout: ${stdout}`)
                     response.send({ err: 0, msg: `${stdout}` });
-                    return;
 
-                }
-
-                if (stderr) {
+                } else if (stderr) {
                     console.error(`stderr: ${stderr}`);
                     response.send({ err: 1, msg: `${stderr}` });
-                    return;
                 }
-
-                response.send({ err: 0, msg: '执行结束，无结果返回。' });
             }, delay);
         });
     } else {
@@ -556,14 +508,9 @@ app.post('/runCmd', function(request, response) {
  */
 app.get('/runLog/:jsName', function (request, response) {
     if (request.session.loggedin) {
-        const jsName = request.params.jsName;
-        let shareCodeFile = getLastModifyFilePath(path.join(rootPath, `log/${jsName}/`));
-        if (jsName === 'rm_log') {
-            shareCodeFile = path.join(rootPath, `log/${jsName}.log`)
-        }
-
+        let shareCodeFile = getLastModifyFilePath(path.join(rootPath, `log/${request.params.jsName}/`));
         if (shareCodeFile) {
-            const content = getFileContentByName(shareCodeFile);
+            content = getFileContentByName(shareCodeFile);
             response.setHeader("Content-Type", "text/plain");
             response.send(content);
         } else {
