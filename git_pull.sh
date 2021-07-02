@@ -23,14 +23,26 @@ ContentNewTask=${ShellDir}/new_task
 ContentDropTask=${ShellDir}/drop_task
 SendCount=${ShellDir}/send_count
 isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
-ShellURL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base
+ShellURL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base 
 ScriptsURL=https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts
 
 ## 更新crontab，gitee服务器同一时间限制5个链接，因此每个人更新代码必须错开时间，每次执行git_pull随机生成。
 ## 每天次数随机，更新时间随机，更新秒数随机，至少6次，至多12次，大部分为8-10次，符合正态分布。
 function Update_Cron {
   if [ -f ${ListCron} ]; then
-    perl -i -pe "s|.+(bash.+git_pull.+log.*)|2 0-23/1 \* \* \* sleep 5 && \1|" ${ListCron}
+    RanMin=$((${RANDOM} % 60))
+    RanSleep=$((${RANDOM} % 56))
+    RanHourArray[0]=$((${RANDOM} % 3))
+    for ((i=1; i<14; i++)); do
+      j=$(($i - 1))
+      tmp=$((${RANDOM} % 3 + ${RanHourArray[j]} + 2))
+      [[ ${tmp} -lt 24 ]] && RanHourArray[i]=${tmp} || break
+    done
+    RanHour=${RanHourArray[0]}
+    for ((i=1; i<${#RanHourArray[*]}; i++)); do
+      RanHour="${RanHour},${RanHourArray[i]}"
+    done
+    perl -i -pe "s|.+(bash.+git_pull.+log.*)|${RanMin} ${RanHour} \* \* \* sleep ${RanSleep} && \1|" ${ListCron}
     crontab ${ListCron}
   fi
 }
@@ -48,7 +60,7 @@ function Git_PullShell {
 ## 克隆scripts
 function Git_CloneScripts {
   echo -e "克隆脚本\n"
-  git clone -b master ${ScriptsURL} ${ScriptsDir}
+  git clone -b main ${ScriptsURL} ${ScriptsDir}
   ExitStatusScripts=$?
   echo
 }
@@ -59,7 +71,7 @@ function Git_PullScripts {
   cd ${ScriptsDir}
   git fetch --all
   ExitStatusScripts=$?
-  git reset --hard origin/master
+  git reset --hard origin/main
   echo
 }
 
