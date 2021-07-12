@@ -165,7 +165,7 @@ function Run_Nohup {
 
 ## 运行挂机脚本
 function Run_HangUp {
-  HangUpJs="jd_crazy_joy_coin"
+  HangUpJs="jd_crazy_joy_coin,jd_cfd_loop"
   cd ${ScriptsDir}
   for js in ${HangUpJs}; do
     Import_Conf ${js} && Set_Env
