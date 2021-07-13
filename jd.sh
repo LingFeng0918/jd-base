@@ -169,10 +169,12 @@ function Run_HangUp {
   cd ${ScriptsDir}
   for js in ${HangUpJs}; do
     Import_Conf ${js} && Set_Env
+    echo $(expr $js );
     if type pm2 >/dev/null 2>&1; then
       pm2 stop ${js}.js 2>/dev/null
       pm2 flush
       pm2 start -a ${js}.js --watch "${ScriptsDir}/${js}.js" --name="${js}"
+      echo $(expr ${ScriptsDir}/${js}.js );
     else
       Run_Nohup >/dev/null 2>&1
     fi
