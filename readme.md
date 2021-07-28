@@ -48,7 +48,7 @@ lingfeng0918/jd:v3
 ```
 shell一键安装docker与watchtower(by:老揭力)
 ```shell
-wget -q https://raw.githubusercontent.com/dockere/jd-base/master/sample/jd-docker.sh -O jd-docker.sh && chmod +x jd-docker.sh && ./jd-docker.sh
+wget -q https://raw.githubusercontent.com/LingFeng0918/jd-base/master/sample/jd-docker.sh -O jd-docker.sh && chmod +x jd-docker.sh && ./jd-docker.sh
 ```
 # 你要知道的命令↓
 1. 手动 git pull 更新脚本
