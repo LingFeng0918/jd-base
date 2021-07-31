@@ -30,15 +30,24 @@ function Import_Conf {
 }
 
 
-## 用户数量 UserSum
+# ## 用户数量 UserSum
+# function Count_UserSum {
+#   for ((i=1; i<=35; i++)); do
+#     Tmp=Cookie$i
+#     CookieTmp=${!Tmp}
+#     [[ ${CookieTmp} ]] && UserSum=$i || break
+#   done
+# }
+## 用户数量UserSum
 function Count_UserSum {
-  for ((i=1; i<=35; i++)); do
+  i=1
+  while [ $i -le 1000 ]; do
     Tmp=Cookie$i
     CookieTmp=${!Tmp}
     [[ ${CookieTmp} ]] && UserSum=$i || break
+    let i++
   done
 }
-
 
 ## 导出互助码的通用程序
 function Cat_Scodes {
