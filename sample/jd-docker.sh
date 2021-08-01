@@ -198,6 +198,7 @@ log "3.开始创建容器并执行"
 docker run -dit \
     -v $CONFIG_PATH:/jd/config \
     -v $LOG_PATH:/jd/log \
+    -v $SCRIPT_PATH:/jd/scripts \
     $MOUNT_SCRIPT \
     $MAPPING_PORT \
     --name $CONTAINER_NAME \
