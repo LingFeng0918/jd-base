@@ -39,7 +39,7 @@ var loginFaild = "请先登录!";
 
 var configString = "config sample crontab shareCode diy";
 
-var s_token, cookies, guid, lsid, lstoken, okl_token, token, userCookie = "",UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 SP-engine/2.14.0 main%2F1.0 baiduboxapp/11.18.0.16 (Baidu; P2 13.3.1) NABar/0.0";
+var s_token, cookies, guid, lsid, lstoken, okl_token, token, userCookie = ""
 
 function praseSetCookies(response) {
     s_token = response.body.s_token
@@ -74,13 +74,8 @@ function getCookie(response) {
     console.log("\n####################################################\n\n");
     return userCookie;
 }
-function getUA(){
-    UANumber = randomString(5).toLowerCase();
-    UA = `android;10.0.2;9;${randomString(28)}-${randomString(2)}D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/${UANumber};partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36`;
-    uuid = UA.split(';') && UA.split(';')[4] || ''
-}
+
 async function step1() {
-	//getUA()
     try {
         s_token, cookies, guid, lsid, lstoken, okl_token, token = ""
         let timeStamp = (new Date()).getTime()
@@ -106,7 +101,6 @@ async function step1() {
 };
 
 async function step2() {
-	//getUA()
     try {
         if (cookies == "") {
             return 0
@@ -145,7 +139,6 @@ async function step2() {
 var i = 0;
 
 async function checkLogin() {
-	//getUA()
     try {
         if (cookies == "") {
             return 0
