@@ -39,7 +39,7 @@ var loginFaild = "请先登录!";
 
 var configString = "config sample crontab shareCode diy";
 
-var s_token, cookies, guid, lsid, lstoken, okl_token, token, userCookie = "",UA = "";
+var s_token, cookies, guid, lsid, lstoken, okl_token, token, userCookie = "",UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 SP-engine/2.14.0 main%2F1.0 baiduboxapp/11.18.0.16 (Baidu; P2 13.3.1) NABar/0.0";
 
 function praseSetCookies(response) {
     s_token = response.body.s_token
@@ -80,7 +80,7 @@ function getUA(){
     uuid = UA.split(';') && UA.split(';')[4] || ''
 }
 async function step1() {
-	getUA()
+	//getUA()
     try {
         s_token, cookies, guid, lsid, lstoken, okl_token, token = ""
         let timeStamp = (new Date()).getTime()
@@ -106,7 +106,7 @@ async function step1() {
 };
 
 async function step2() {
-	getUA()
+	//getUA()
     try {
         if (cookies == "") {
             return 0
@@ -145,7 +145,7 @@ async function step2() {
 var i = 0;
 
 async function checkLogin() {
-	getUA()
+	//getUA()
     try {
         if (cookies == "") {
             return 0
