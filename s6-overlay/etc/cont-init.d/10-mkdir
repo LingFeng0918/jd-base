@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv bash
+
+run_mkdir () {
+    echo -e "\n======================== 检测文件夹 ========================\n"
+    if [ ! -d $JD_DIR/config ]; then
+        echo -e "没有映射config配置目录给本容器，在容器内创建该文件夹\n"
+        mkdir -p $JD_DIR/config
+    fi
+    if [ ! -d $JD_DIR/log ]; then
+        echo -e "没有映射log日志目录给本容器，在容器内创建该文件夹\n"
+        mkdir -p $JD_DIR/log
+    fi
+    if [ ! -d $JD_DIR/own ]; then
+        echo -e "没有映射own脚本目录给本容器，在容器内创建该文件夹\n"
+        mkdir -p $JD_DIR/own
+    fi
+}
+
+run_mkdir 2>&1 | perl -pe "s|^(.+)|[cont-init.d] $(basename $0): \1|g"

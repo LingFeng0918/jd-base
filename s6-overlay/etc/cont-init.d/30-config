@@ -1,0 +1,30 @@
+#!/usr/bin/with-contenv bash
+
+run_config () {
+    echo -e "\n======================== 检测配置文件 ========================\n"
+
+    if [ -s $JD_DIR/config/crontab.list ]; then
+        echo -e "检测到 $JD_DIR/config/crontab.list 存在，自动导入定时任务...\n"
+        perl -i -pe "{s|CMD_UPDATE|jup|g; s|ROOT_DIR|/jd|g; s|CMD_RMLOG|jlog|g; s|CMD_CODE|jcode|g; s|CMD_MTASK|mtask|g; s|CMD_JTASK|jtask|g}" $JD_DIR/config/crontab.list
+    else
+        echo -e "检测到 $JD_DIR/config/crontab.list 不存在，从示例文件复制一份用于初始化...\n"
+        cp -fv $JD_DIR/sample/crontab.sample.list $JD_DIR/config/crontab.list
+        perl -i -pe "{s|CMD_UPDATE|jup|g; s|ROOT_DIR|/jd|g; s|CMD_RMLOG|jlog|g; s|CMD_CODE|jcode|g; s|CMD_MTASK|mtask|g; s|CMD_JTASK|jtask|g}" $JD_DIR/config/crontab.list
+        echo
+    fi
+    crontab $JD_DIR/config/crontab.list
+
+    if [ ! -s $JD_DIR/config/config.sh ]; then
+        echo -e "检测到 $JD_DIR/config/config.sh 不存在，从示例文件复制一份用于初始化...\n"
+        cp -fv $JD_DIR/sample/config.sample.sh $JD_DIR/config/config.sh
+        echo
+    fi
+
+    if [[ $ENABLE_TG_BOT == true ]] && [ ! -s $JD_DIR/config/bot.json ] && type python3 &>/dev/null; then
+        echo -e "检测到 $JD_DIR/config/bot.json 不存在，从示例文件复制一份用于初始化...\n"
+        cp -fv $JD_DIR/sample/bot.sample.json $JD_DIR/config/bot.json
+        echo
+    fi
+}
+
+run_config 2>&1 | perl -pe "s|^(.+)|[cont-init.d] $(basename $0): \1|g"

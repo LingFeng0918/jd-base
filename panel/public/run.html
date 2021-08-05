@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>手动执行</title>
+    <title>手动执行脚本</title>
     <script type="text/javascript" src="./js/jquery.min.js"></script>
     <script type="text/javascript" src="./js/codemirror.min.js"></script>
     <script type="text/javascript" src="./js/shell.js"></script>
@@ -20,12 +20,12 @@
         <div class="diffs">
             <nav>
                 <ul>
-                    <li><a href="./home">首页</a></li>
+                    <li><a href="./home">配置设定</a></li>
                     <li><a href="./crontab">定时设定</a></li>
                     <li><a href="./diff">对比工具</a></li>
-                    <li><a href="./shareCode">Share Code</a></li>
                     <li><a href="./diy">自定义脚本</a></li>
                     <li class="active"><a href="./run">手动执行</a></li>
+                    <li><a href="./terminal">终端</a></li>
                     <li><a href="./log">日志查询</a></li>
                     <li><a href="./viewScripts">查看脚本</a></li>
                     <li><a href="./changepwd">修改密码</a></li>
@@ -33,23 +33,23 @@
                 </ul>
             </nav>
             <header>
-                <h1>手动执行</h1>
+                <h1>手动执行脚本</h1>
                 <button id="wrap" title="切换换行">切换换行</button>
+                <button id="move-bottom" title="跳转底部">跳转底部</button>
                 <br/>
                 <button id="jd_list" class="cmd-btn" title="列出脚本">列出脚本</button>
-                <button id="jd_bean_sign" class="cmd-btn" title="京豆签到">京豆签到</button>
-                <button id="jd_bean_change" class="cmd-btn" title="资产变动通知">资产变动通知</button>
-                <button id="jd_cash_exchange" class="cmd-btn" title="领现金兑红包">领现金兑红包</button>
-                <button id="jd_priceProtect" class="cmd-btn" title="京东保价">京东保价</button>
-                <button id="jd_blueCoin" class="cmd-btn" title="超市兑换">超市兑换</button>
-                <button id="git_pull" title="更新脚本">更新脚本</button>
-                <button id="export_sharecodes" title="导出所有互助码">导出所有互助码</button>
+                <button id="jup" title="更新脚本文件">更新脚本文件</button>
+                <button id="rm_log" class="cmd-btn" title="删除旧日志">删除旧日志</button>
+                <button id="jd_get_share_code" class="cmd-btn" title="获取互助码">获取互助码</button>
+                <button id="jcode" title="导出互助码">导出互助码</button>
+                <button id="ps" title="查看进程">查看进程</button>
+                <button id="jd-crazy-joy-coin" title="查看挂机日志">查看挂机日志</button>
                 <button id="hangup" title="重启挂机程序">重启挂机程序</button>
                 <button id="resetpwd" title="重置用户名密码">重置用户名密码</button>
                 <br/>
                 <form class="run-cmd-form" action="runCmd" method="POST">
                     <div class="cmd-section">
-                        bash jd <input id="jdScript" name="jdScript" type="text" placeholder="请输入脚本名称" required> now
+                        jtask <input id="jdScript" name="jdScript" type="text" placeholder="请输入脚本名称或脚本绝对路径" required> now
                     </div>
                     <input type="submit" id="runCmd">
                 </form>
@@ -76,6 +76,28 @@
             });
 
             $('.cmd-btn').click(function() {
+                let confirmTxt, cmd;
+                switch (this.id) {
+                    case 'rm_log':
+                        confirmTxt = '确认删除旧日志？';
+                        cmd = 'bash jlog.sh 2>&1 | tee log/jlog.log';
+                        break;
+                    case 'jd_list':
+                        // confirmTxt = '';
+                        cmd = 'bash jtask.sh';
+                        break;
+                    case 'jd_get_share_code':
+                        confirmTxt = '确认获取互助码？';
+                        cmd = `bash jtask.sh ${this.id} now`;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (confirmTxt && !confirm(confirmTxt)) {
+                    return;
+                }
+
                 if (timer) {
                     Swal.fire({
                         text: '请等待上一条任务执行完毕。',
@@ -83,11 +105,11 @@
                     });
                     return;
                 }
+
                 editor.setValue('');
 
                 const jsName = this.id === 'jd_list' ? '' : this.id;
-                const cmd = jsName ? `bash jd ${jsName} now`: 'bash jd';
-                $.post('./runCmd', {cmd: cmd}, function (data) {
+                $.post('./runCmd', { cmd }, function (data) {
                     editor.setValue(data.msg);
 
                     if (jsName) {
@@ -106,30 +128,38 @@
                 }, 1000);
             });
 
-            $('#hangup, #resetpwd, #export_sharecodes, #git_pull').click(function() {
+            $('#hangup, #resetpwd, #jcode, #jup, #ps, #jd-crazy-joy-coin').click(function() {
                 let confirmTxt, cmd;
                 switch (this.id) {
-                    case 'git_pull':
+                    case 'jup':
                         confirmTxt = '确认更新脚本文件？';
-                        cmd = 'bash git_pull 2>&1 | tee -a ${JD_DIR}/log/git_pull.log';
+                        cmd = 'bash jup.sh 2>&1 | tee -a log/jup.log';
                         break;
-                    case 'export_sharecodes':
-                        confirmTxt = '确认导出所有互助码？';
-                        cmd = `bash ${this.id}`;
+                    case 'jcode':
+                        confirmTxt = '确认导出互助码？';
+                        cmd = `bash ${this.id}.sh`;
+                        break;
+                    case 'ps':
+                        // confirmTxt = '确认查看进程？';
+                        cmd = `${this.id}`;
+                        break;
+                    case 'jd-crazy-joy-coin':
+                        // confirmTxt = '确认查看挂机日志？';
+                        cmd = `cat /root/.pm2/logs/${this.id}-out.log 2>&1`;
                         break;
                     case 'hangup':
                         confirmTxt = '确认重启挂机程序？';
-                        cmd = `bash jd ${this.id}`;
+                        cmd = `bash jtask.sh ${this.id}`;
                         break;
                     case 'resetpwd':
                         confirmTxt = '重置用户名密码？';
-                        cmd = `bash jd ${this.id}`;
+                        cmd = `bash jtask.sh ${this.id}`;
                         break;
                     default:
                         break;
                 }
 
-                if (!confirm(confirmTxt)) {
+                if (confirmTxt && !confirm(confirmTxt)) {
                     return;
                 }
 
@@ -172,7 +202,7 @@
                 }
                 editor.setValue('');
 
-                const cmd = `bash jd ${jdScript} now`;
+                const cmd = `bash jtask.sh ${jdScript} now`;
                 $.post('./runCmd', {cmd: cmd, delay: 1000}, function (data) {
                     editor.setValue(data.msg);
 
@@ -217,6 +247,10 @@
                 var lineWrapping = editor.getOption('lineWrapping');
                 editor.setOption('lineWrapping', !lineWrapping);
             });
+            
+            $('#move-bottom').click(function () {
+                editor.execCommand('goDocEnd');
+            })
 
             $('#jd_list').trigger('click');
         });

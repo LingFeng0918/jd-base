@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv bash
+
+run_jbot () {
+    if type python3 &>/dev/null; then
+        echo -e "\n======================== 启动Telegram Bot ========================\n"
+        if [[ $ENABLE_TG_BOT == true ]]; then
+            if [[ -z $(grep -E "123456789" $JD_DIR/config/bot.json) ]]; then
+                cd $JD_DIR/jbot
+                pm2 start ecosystem.config.js
+            else
+                echo -e  "似乎 $JD_DIR/config/bot.json 还未修改为你自己的信息，可能是首次部署容器，因此不启动Telegram Bot...\n"
+            fi
+        else
+            echo -e "已设置为不自动启动Telegram Bot，跳过...\n"
+        fi
+    fi
+}
+
+run_jbot 2>&1 | perl -pe "s|^(.+)|[cont-init.d] $(basename $0): \1|g"
