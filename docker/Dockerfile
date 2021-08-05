@@ -24,10 +24,16 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
                              perl \
                              openssl \
                              openssh \
+                             nginx \
+                             python3 \
+                             jq \
+                             openssh \
     && rm -rf /var/cache/apk/* \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && git clone -b ${JD_BASE_BRANCH} ${JD_BASE_URL} ${JD_DIR} \
+    && git config --global user.email "LingFeng0918@@users.noreply.github.com" \
+    && git config --global user.name "LingFeng0918" \
     && cd ${JD_DIR}/panel \
     && npm install \
     && git clone -b ${JD_SCRIPTS_BRANCH} ${JD_SCRIPTS_URL} ${JD_DIR}/scripts \
