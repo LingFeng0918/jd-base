@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 
-## 此脚本如果要跑，建议天天跑，并且cron紧接在jd_bean_change刚跑完的时候，这样以方便提取jd_bean_change用到TempBlockCookie
-
 ## 判断环境
 dir_shell=$(dirname $(readlink -f "$0"))
 dir_root=$dir_shell
 
 ## 导入通用变量与函数
 . $dir_shell/jshare.sh
-import_config_no_check "jd_bean_change"
 
 ## 豆子变化记录文件
 bean_income=$dir_log/bean_income.csv
@@ -45,4 +42,3 @@ for num in $(echo $TempBlockCookie | perl -pe "s| |\n|g" | sort -nu); do
         perl -i -pe "s|^($bean_date)(,.*)|\1,0\2|" $bean_income $bean_outlay $bean_total
     fi
 done
-

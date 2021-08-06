@@ -2,28 +2,31 @@ from telethon import events, Button
 import os
 import shutil
 from asyncio import exceptions
-from .. import jdbot, chat_id, _JdDir
-from .utils import split_list, logger,press_event
+from .. import jdbot, chat_id, _JdDir, mybot, chname
+from .utils import split_list, logger, press_event
 
 
 @jdbot.on(events.NewMessage(from_users=chat_id, pattern='/edit'))
-async def myfileup(event):
+async def my_edit(event):
     '''定义编辑文件操作'''
+    logger.info(f'即将执行{event.raw_text}命令')
+    msg_text = event.raw_text.split(' ')
     SENDER = event.sender_id
     path = _JdDir
     page = 0
-    if len(event.raw_text.split(' ')) > 1:
-        text = event.raw_text.replace('/edit ','')
+    if isinstance(msg_text,list) and len(msg_text) == 2:
+        text = msg_text[-1]
     else:
-        text =None
+        text = None
+    logger.info(f'命令参数值为：{text}')
     if text and os.path.isfile(text):
         try:
-            with open(text,'r',encoding='utf-8') as f:
+            with open(text, 'r', encoding='utf-8') as f:
                 lines = f.readlines()
                 filelist = split_list(lines, 15)
                 path = text
         except Exception as e:
-            await jdbot.send_message(chat_id, 'something wrong,I\'m sorry\n'+str(e))
+            await jdbot.send_message(chat_id, f'something wrong,I\'m sorry\n{str(e)}')
     elif text and os.path.isdir(text):
         path = text
         filelist = None
@@ -32,10 +35,15 @@ async def myfileup(event):
         filelist = None
     else:
         filelist = None
-    async with jdbot.conversation(SENDER, timeout=60) as conv:
+    async with jdbot.conversation(SENDER, timeout=120) as conv:
         msg = await conv.send_message('正在查询，请稍后')
         while path:
             path, msg, page, filelist = await myedit(conv, SENDER, path, msg, page, filelist)
+
+
+if chname:
+    jdbot.add_event_handler(my_edit, events.NewMessage(
+        from_users=chat_id, pattern=mybot['命令别名']['edit']))
 
 
 async def myedit(conv, SENDER, path, msg, page, filelist):
@@ -60,7 +68,7 @@ async def myedit(conv, SENDER, path, msg, page, filelist):
                 dir.sort()
                 markup = [Button.inline(file, data=str(
                     file)) for file in dir]
-                markup = split_list(markup, 3)
+                markup = split_list(markup, int(mybot['每页列数']))
                 if len(markup) > 30:
                     markup = split_list(markup, 30)
                     newmarkup = markup[page]
@@ -105,33 +113,38 @@ async def myedit(conv, SENDER, path, msg, page, filelist):
                 path = _JdDir
             return path, msg, page,  None
         elif res == 'edit':
-            await jdbot.send_message(chat_id, '请复制并修改以下内容，修改完成后发回机器人，2分钟内有效')
+            await jdbot.send_message(chat_id, '请复制并修改以下内容，修改完成后发回机器人，2分钟内有效\n发送`cancel`或`取消`取消对话')
             await jdbot.delete_messages(chat_id, msg)
-            msg = await conv.send_message("".join(newmarkup))
+            msg = await conv.send_message(f'`{"".join(newmarkup)}`')
             resp = await conv.get_response()
+            if resp.raw_text == 'cancel' or resp.raw_text == '取消':
+                await jdbot.delete_messages(chat_id,msg)
+                await jdbot.send_message(chat_id, '对话已取消')
+                conv.cancel()
+                return
             markup[page] = resp.raw_text.split('\n')
             for a in range(len(markup[page])):
                 markup[page][a] = markup[page][a]+'\n'
-            shutil.copy(path, path+'.bak')
+            shutil.copy(path, f'{path}.bak')
             with open(path, 'w+', encoding='utf-8') as f:
                 markup = ["".join(a) for a in markup]
                 f.writelines(markup)
-            await jdbot.send_message(chat_id, '文件已修改成功，原文件备份为'+path+'.bak')
+            await jdbot.send_message(chat_id, f'文件已修改成功，原文件备份为{path}.bak')
             conv.cancel()
             return None, None, None, None
-        elif os.path.isfile(path+'/'+res):
+        elif os.path.isfile(f'{path}/{res}'):
             msg = await jdbot.edit_message(msg, '文件读取中...请稍候')
-            with open(path+'/'+res, 'r', encoding='utf-8') as f:
+            with open(f'{path}/{res}', 'r', encoding='utf-8') as f:
                 lines = f.readlines()
             lines = split_list(lines, 15)
             page = 0
-            return path+'/'+res, msg, page, lines
+            return f'{path}/{res}', msg, page, lines
         else:
-            return path+'/'+res, msg, page, None
+            return f'{path}/{res}', msg, page, None
     except exceptions.TimeoutError:
         msg = await jdbot.edit_message(msg, '选择已超时，本次对话已停止')
         return None, None, None, None
     except Exception as e:
-        msg = await jdbot.edit_message(msg, 'something wrong,I\'m sorry\n'+str(e))
-        logger.error('something wrong,I\'m sorry\n'+str(e))
+        msg = await jdbot.edit_message(msg, f'something wrong,I\'m sorry\n{str(e)}')
+        logger.error(f'something wrong,I\'m sorry\n{str(e)}')
         return None, None, None, None

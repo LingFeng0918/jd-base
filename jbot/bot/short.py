@@ -1,18 +1,18 @@
 from telethon import events, Button
 from .utils import split_list, press_event, cmd
-import subprocess
 from asyncio import exceptions
-from .. import jdbot, chat_id, _shortcut, logger
+from .. import jdbot, chat_id, _shortcut, logger, mybot, chname
 
 
 @jdbot.on(events.NewMessage(from_users=chat_id, pattern=r'^/a$'))
-async def shortcut(event):
+async def my_a(event):
     markup = []
     SENDER = event.sender_id
     msg = await jdbot.send_message(chat_id, '正在查询您的常用命令，请稍后')
     with open(_shortcut, 'r', encoding='utf-8') as f:
         shortcuts = f.readlines()
     try:
+        cmdtext = None
         async with jdbot.conversation(SENDER, timeout=60) as conv:
             markup = [Button.inline(shortcut.split(
                 '-->')[0], data=str(shortcut.split('-->')[-1])) for shortcut in shortcuts if '-->' in shortcut]
@@ -24,34 +24,45 @@ async def shortcut(event):
             if res == 'cancel':
                 msg = await jdbot.edit_message(msg, '对话已取消')
                 conv.cancel()
-            elif 'nohup ' in res:
-                msg = await jdbot.edit_message(msg, '即将执行您的操作'+res)
-                cmdtext = res.replace('nohup ', '')
-                subprocess.Popen(
-                    cmdtext, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                msg = await jdbot.edit_message(msg, '已在后台执行您的操作'+res.replace('nohup ', ''))
-                conv.cancel()
             else:
                 await jdbot.delete_messages(chat_id, msg)
-                await cmd(res)
+                cmdtext = res
                 conv.cancel()
+        if cmdtext:
+            await cmd(cmdtext.replace('nohup ', ''))
     except exceptions.TimeoutError:
         msg = await jdbot.edit_message(msg, '选择已超时，对话已停止')
     except Exception as e:
-        await jdbot.edit_message(msg, 'something wrong,I\'m sorry\n'+str(e))
-        logger.error('something wrong,I\'m sorry\n'+str(e))
+        await jdbot.edit_message(msg, f'something wrong,I\'m sorry\n{str(e)}')
+        logger.error(f'something wrong,I\'m sorry\n{str(e)}')
+
 
 @jdbot.on(events.NewMessage(from_users=chat_id, pattern=r'^/b$'))
-async def shortcut(event):
+async def my_b(event):
     markup = []
     msg = await jdbot.send_message(chat_id, '正在查询您的常用命令，请稍后')
     with open(_shortcut, 'r', encoding='utf-8') as f:
         shortcuts = f.readlines()
     try:
-        await jdbot.delete_messages(chat_id,msg)
-        markup = [Button.text(shortcut,single_use=True) for shortcut in shortcuts if '-->' not in shortcut]
-        markup = split_list(markup, 3)
+        await jdbot.delete_messages(chat_id, msg)
+        markup = [Button.text(shortcut, single_use=True)
+                  for shortcut in shortcuts if '-->' not in shortcut]
+        markup = split_list(markup, int(mybot['每页列数']))
         await jdbot.send_message(chat_id, '请做出您的选择：', buttons=markup)
     except Exception as e:
-        await jdbot.edit_message(msg, 'something wrong,I\'m sorry\n'+str(e))
-        logger.error('something wrong,I\'m sorry\n'+str(e))
+        await jdbot.edit_message(msg, f'something wrong,I\'m sorry\n{str(e)}')
+        logger.error(f'something wrong,I\'m sorry\n{str(e)}')
+
+
+@jdbot.on(events.NewMessage(from_users=chat_id, pattern=r'^/clearboard$'))
+async def my_clear(event):
+    try:
+        await jdbot.send_message(chat_id, '已清空您的keyboard',buttons=Button.clear())
+    except Exception as e:
+        await jdbot.send_message(chat_id, f'something wrong,I\'m sorry\n{str(e)}')
+        logger.error(f'something wrong,I\'m sorry\n{str(e)}')
+
+if chname:
+    jdbot.add_event_handler(my_a, events.NewMessage(
+        from_users=chat_id, pattern=mybot['命令别名']['a']))
+    jdbot.add_event_handler(my_b, events.NewMessage(from_users=chat_id, pattern=mybot['命令别名']['b']))

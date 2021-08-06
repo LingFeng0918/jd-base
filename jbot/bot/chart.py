@@ -1,33 +1,46 @@
 from telethon import events
-from .. import jdbot, chat_id, _LogDir, logger
+from .. import jdbot, chat_id, _LogDir, logger, mybot, chname
 from ..bot.quickchart import QuickChart
 from .beandata import get_bean_data
-_botimg = _LogDir + '/bot/bean.jpeg'
+_botimg = f'{_LogDir}/bot/bean.jpeg'
+
 
 @jdbot.on(events.NewMessage(chats=chat_id, pattern=r'^/chart'))
-async def mybean(event):
+async def my_chart(event):
+    logger.info(f'即将执行{event.raw_text}命令')
+    msg_text = event.raw_text.split(' ')
     try:
-        await jdbot.send_message(chat_id, '正在查询，请稍后')
-        if len(event.raw_text.split(' ')) > 1:
-            text = event.raw_text.replace('/chart ', '')
+        msg = await jdbot.send_message(chat_id, '正在查询，请稍后')
+        if isinstance(msg_text,list) and len(msg_text) == 2:
+            text = msg_text[-1]
         else:
             text = None
+        logger.info(f'命令参数值为：{text}')
         if text and int(text):
             beanin, beanout, beanstotal, date = get_bean_data(int(text))
             if not beanout:
-                await jdbot.send_message(chat_id, 'something wrong,I\'m sorry\n'+str(beanin))
+                msg = await jdbot.edit_message(msg, f'something wrong,I\'m sorry\n{str(beanin)}')
             else:
-                creat_chart(date, '账号'+str(text),
+                creat_chart(date, f'账号{str(text)}',
                             beanin, beanout, beanstotal[1:])
-                await jdbot.send_message(chat_id, f'您的账号{text}收支情况', file=_botimg)
+                await jdbot.delete_messages(chat_id,msg)
+                msg = await jdbot.send_message(chat_id, f'您的账号{text}收支情况', file=_botimg)
         else:
-            await jdbot.send_message(chat_id, '请正确使用命令\n/chart n n为第n个账号')
+            msg = await jdbot.edit_message(msg, '请正确使用命令\n/chart n n为第n个账号')
     except Exception as e:
-        await jdbot.send_message(chat_id, 'something wrong,I\'m sorry\n'+str(e))
-        logger.error('something wrong,I\'m sorry'+str(e))
+        await jdbot.edit_message(msg, f'something wrong,I\'m sorry\n{str(e)}')
+        logger.error(f'something wrong,I\'m sorry\n{str(e)}')
+    finally:
+        logger.info(f'执行{event.raw_text}命令完毕')
+
+
+if chname:
+    jdbot.add_event_handler(my_chart, events.NewMessage(
+        chats=chat_id, pattern=mybot['命令别名']['chart']))
 
 
 def creat_chart(xdata, title, bardata, bardata2, linedate):
+    logger.info(f'即将生成chart图表{title}')
     qc = QuickChart()
     qc.background_color = '#fff'
     qc.width = "1000"
@@ -94,7 +107,7 @@ def creat_chart(xdata, title, bardata, bardata2, linedate):
             },
             "title": {
                 "display": True,
-                "text": title + "   收支情况",
+                "text": f'{title}   收支情况',
                 "fontSize": 24,
             },
             "scales": {
@@ -132,3 +145,4 @@ def creat_chart(xdata, title, bardata, bardata2, linedate):
         }
     }
     qc.to_file(_botimg)
+    logger.info(f'生成chart图表{title}完成')

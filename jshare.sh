@@ -8,6 +8,7 @@ dir_sample=$dir_root/sample
 dir_log=$dir_root/log
 dir_list_tmp=$dir_log/.tmp
 dir_code=$dir_log/jcode
+dir_panel=$dir_root/panel
 dir_scripts_node_modules=$dir_scripts/node_modules
 
 ## 文件
@@ -17,8 +18,9 @@ file_sharecode=$dir_config/sharecode.sh
 file_config_user=$dir_config/config.sh
 file_bot_setting_sample=$dir_sample/bot.sample.json
 file_bot_setting_user=$dir_config/bot.json
+file_auth_sample=$dir_sample/auth.sample.json
+file_auth_user=$dir_config/auth.json
 file_diy_shell=$dir_config/diy.sh
-file_task_finish_shell=$dir_config/task_finish.sh
 
 ## 清单文件
 list_crontab_user=$dir_config/crontab.list
@@ -48,7 +50,11 @@ env_name=(
     JD_CASH_SHARECODES
     JDSGMH_SHARECODES
     JDCFD_SHARECODES
+    JDGLOBAL_SHARECODES
+    JD818_SHARECODES
     JDHEALTH_SHARECODES
+    CITY_SHARECODES
+    
 )
 var_name=(
     Cookie
@@ -64,7 +70,10 @@ var_name=(
     ForOtherCash
     ForOtherSgmh
     ForOtherCfd
+    ForOtherGlobal
+    ForOtherCarni
     ForOtherHealth
+    ForOtherCity
 )
 
 ## 所有有互助码的活动，把脚本名称列在 name_js 中，对应 config.sh 中互助码后缀列在 name_config 中，中文名称列在 name_chinese 中。
@@ -82,7 +91,10 @@ name_js=(
     jd_cash
     jd_sgmh
     jd_cfd
+    jd_global
+    jd_carnivalcity
     jd_health
+    jd_city
 )
 name_config=(
     Fruit
@@ -97,7 +109,10 @@ name_config=(
     Cash
     Sgmh
     Cfd
+    Global
+    Carni
     Health
+    City
 )
 name_chinese=(
     东东农场
@@ -112,7 +127,10 @@ name_chinese=(
     签到领现金
     闪购盲盒
     京喜财富岛
+    环球挑战赛
+    京东手机狂欢城
     东东健康社区
+    城城领现金
 )
 
 ## 软连接及其原始文件对应关系
@@ -123,6 +141,7 @@ link_name=(
     jcode
     jcsv
     jlog
+    jpanel
     jup
 )
 original_name=(
@@ -132,6 +151,7 @@ original_name=(
     jcode.sh
     jcsv.sh
     jlog.sh
+    jpanel.sh
     jup.sh
 )
 
@@ -192,7 +212,7 @@ notify_telegram () {
 
 ## 统计用户数量
 count_user_sum () {
-    for ((i=1; i<=${SUM:-$((3 * 4))}; i++)); do
+    for ((i=1; i<=${SUM:-$((5 * 10))}; i++)); do
         local tmp1=Cookie$i
         local tmp2=${!tmp1}
         [[ $tmp2 ]] && user_sum=$i || break

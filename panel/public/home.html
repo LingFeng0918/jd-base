@@ -37,14 +37,13 @@
             </nav>
             <header>
                 <h1>在线编辑工具</h1>
-                <button id="save" title="保存">保存</button>
+                <button id="save" title="保存">保存 config.sh</button>
                 <button id="wrap" title="切换换行">切换换行</button>
-                <button id="cookietools" title="手机扫描二维码登录">扫码获取 Cookie</button>
+                <button id="cookietools" title="手机扫描二维码登录">扫码获取Cookie</button>
+                &nbsp;&nbsp;
                 <span>
                     <input type="checkbox" id="autoReplace" checked="checked">
-                    <label for="autoReplace">
-                        <font color="#000000" size="1">扫码后自动替换</font>
-                    </label>
+                    <label for="autoReplace">扫码后自动替换Cookie</label>
                 </span>
             </header>
             <h4>config.sh</h4>
@@ -88,14 +87,15 @@
             if (sessionStorage.getItem('autoReplaceCookie') === 'false') {
                 $('#autoReplace').prop('checked', false);
             }
-            $('#autoReplace').on('change', function () {
+            $('#autoReplace').on('change', function() {
                 sessionStorage.setItem('autoReplaceCookie', $(this).prop('checked'));
             });
 
-            qrcode = new QRCode(document.getElementById("qrcode"), {
-                text: "sample",
-                correctLevel: QRCode.CorrectLevel.L
-            });
+            qrcode = new QRCode(document.getElementById("qrcode"),
+                {
+                    text: "sample",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
 
 
             function copyToClip(content, message) {
@@ -107,7 +107,7 @@
                 document.body.removeChild(aux);
             }
 
-            function autoReplace(cookie) {
+            function autoReplace(cookie){
                 var value = editor.getValue();
                 var ptPin = /pt_pin=[\S]+;/.exec(cookie)[0];
                 var cookieReg = new RegExp(`pt_key=[\\S]+;${ptPin}`);
@@ -134,8 +134,8 @@
                                 if (autoReplace(userCookie)) {
                                     Swal.fire({
                                         title: "cookie已获取(2s后自动替换)",
-                                        html: '<div class="cookieCon" style="font-size:12px;">' +
-                                            userCookie + '</div>',
+                                        html:
+                                            '<div class="cookieCon" style="font-size:12px;">' + userCookie + '</div>',
                                         icon: "success",
                                         showConfirmButton: false,
                                     });
@@ -146,9 +146,9 @@
                                 } else {
                                     Swal.fire({
                                         title: "cookie已获取",
-                                        html: '<div class="cookieCon" style="font-size:16px;font-weight: bold;">自动替换失败，请复制Cookie后手动更新。</div>' +
-                                            '<div class="cookieCon" style="font-size:12px;">' +
-                                            userCookie + '</div>',
+                                        html:
+                                            '<div class="cookieCon" style="font-size:16px;font-weight: bold;">自动替换失败，请复制Cookie后手动更新。</div>' +
+                                            '<div class="cookieCon" style="font-size:12px;">' + userCookie + '</div>',
                                         icon: "success",
                                         confirmButtonText: "复制Cookie",
                                     }).then((result) => {
@@ -158,15 +158,15 @@
                             } else {
                                 Swal.fire({
                                     title: "cookie已获取",
-                                    html: '<div class="cookieCon" style="font-size:12px;">' +
-                                        userCookie + '</div>',
+                                    html:
+                                        '<div class="cookieCon" style="font-size:12px;">' + userCookie + '</div>',
                                     icon: "success",
                                     confirmButtonText: "复制Cookie",
                                 }).then((result) => {
                                     copyToClip(userCookie);
                                 });
                             }
-
+                            
                         } else if (data.err == 21) {
                             clearInterval(timeId);
                             $("#refresh_qrcode").removeClass("hidden");
@@ -207,7 +207,7 @@
                 $.post('./api/save', { content: confContent, name: "config.sh" }, function (data) {
                     let icon = (data.err == 0) ? "success" : "error"
                     Swal.fire({
-                        title: data.title,
+                        title:data.title,
                         text: data.msg,
                         icon: icon
                     }).then((result) => {

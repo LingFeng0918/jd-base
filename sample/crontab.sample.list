@@ -10,7 +10,8 @@
 # 重启挂机程序
 # 33 13 * * * CMD_JTASK hangup
 
-# mtask任务区域，无法被程序自动添加cron的脚本，请自行添加mtask任务。例如：
+# mtask任务区域，既不属于own脚本，也不属于jd_scripts脚本的，请使用mtask命令。
+# 需自行将脚本放在scripts文件夹下，mtask命令运行的脚本可以以jd_、jr_、jx_开头，如
 # 8 5 * * * CMD_MTASK jd_live.js
 
 # otask任务区域，AutoAddOwnCron=true时，自动识别脚本中的cron信息，无法保证准确，建议收到通知后主动检查。
@@ -36,7 +37,7 @@
 29 7,12,18 * * * CMD_JTASK jd_fruit
 49 6 * * 6 CMD_JTASK jd_get_share_code
 36 * * * * CMD_JTASK jd_jdfactory
-14 0-3,11 * * * CMD_JTASK jd_jdzz
+14 11 * * * CMD_JTASK jd_jdzz
 6 0,8,9,13,18,22 * * * CMD_JTASK jd_joy
 */20 0-22 * * * CMD_JTASK jd_joy_feedPets
 0 */8 * * * CMD_JTASK jd_joy_reward
@@ -55,7 +56,9 @@
 1 1 * * * CMD_JTASK jd_redPacket
 0 0 * * * CMD_JTASK jd_shop
 16 0 * * * CMD_JTASK jd_small_home
+35 */3 * * * CMD_JTASK jd_speed
 9 1-23/5 * * * CMD_JTASK jd_superMarket
-25 0,9,18,23 * * * CMD_JTASK jd_syj
+25 9 * * * CMD_JTASK jd_syj
+44 5 * * 5 CMD_JTASK jd_unbind
 45 23 * * * CMD_JTASK jd_unsubscribe
 19 11 * * * CMD_JTASK jx_sign

@@ -7,6 +7,13 @@ dir_root=$dir_shell
 ## 导入通用变量与函数
 . $dir_shell/jshare.sh
 
+## 更新crontab
+update_crontab () {
+    if [[ $(cat $list_crontab_user) != $(crontab -l) ]]; then
+        crontab $list_crontab_user
+    fi
+}
+
 ## 组合Cookie和互助码子程序，$1：要组合的内容
 combine_sub () {
     local what_combine=$1
@@ -54,6 +61,11 @@ trans_JD_BEAN_SIGN_NOTIFY () {
     esac
 }
 
+## 转换UN_SUBSCRIBES
+trans_UN_SUBSCRIBES () {
+    export UN_SUBSCRIBES="${goodPageSize}\n${shopPageSize}\n${jdUnsubscribeStopGoods}\n${jdUnsubscribeStopShop}"
+}
+
 ## 申明全部变量，$1：all/Cookie编号
 export_all_env () {
     local type=$1
@@ -65,6 +77,7 @@ export_all_env () {
     [ -f $file_sharecode ] && . $file_sharecode
     [[ $type == all ]] && combine_all || combine_one $type
     trans_JD_BEAN_SIGN_NOTIFY
+    trans_UN_SUBSCRIBES
 }
 
 random_delay () {
@@ -97,22 +110,20 @@ gen_array_scripts () {
 
 ## 使用说明
 usage () {
-    update_crontab
     define_cmd
     gen_array_scripts
-    echo -e "一：jtask命令运行 jd_scripts 脚本，用法："
-    echo -e "1.$cmd_jtask <js_name>        # 依次执行，如果设置了随机延迟并且当时时间不在0-2、30-31、59分内，将随机延迟一定秒数，EnableTaskFinishShell＝true时将额外运行task_finish.sh"
-    echo -e "2.$cmd_jtask <js_name> now    # 依次执行，无论是否设置了随机延迟，均立即运行，前台会输出日志，同时记录在日志文件中，EnableTaskFinishShell＝true时将额外运行task_finish.sh"
-    echo -e "3.$cmd_jtask <js_name> conc   # 并发执行，无论是否设置了随机延迟，均立即运行，前台不产生日志，直接记录在日志文件中，不会运行task_finish.sh"
-    echo -e "4.$cmd_jtask <js_name> <num>  # num为某Cookie的编号，指定只以该Cookie运行脚本，EnableTaskFinishShell＝true时将额外运行task_finish.sh"
-    echo -e "5.$cmd_jtask runall           # 依次运行所有jd_scripts中的非挂机脚本，非常耗时，不会运行task_finish.sh"
-    echo -e "6.$cmd_jtask hangup           # 重启挂机程序"
-    echo -e "\n二：otask命令运行 own 脚本，需要输入脚本的绝对路径或相对路径（定时任务中必须是绝对路径），otask会将该脚本复制到 scripts 目录下再运行，用法："
-    echo -e "1.$cmd_otask <js_path>        # 依次执行，如果设置了随机延迟并且当时时间不在0-2、30-31、59分内，将随机延迟一定秒数，EnableTaskFinishShell＝true时将额外运行task_finish.sh"
-    echo -e "2.$cmd_otask <js_path> now    # 依次执行，无论是否设置了随机延迟，均立即运行，前台会输出日志，同时记录在日志文件中，EnableTaskFinishShell＝true时将额外运行task_finish.sh"
-    echo -e "3.$cmd_otask <js_path> conc   # 并发执行，无论是否设置了随机延迟，均立即运行，前台不产生日志，直接记录在日志文件中，不会运行task_finish.sh"
-    echo -e "\n三：mtask命令运行无法被程序自动添加cron的脚本。如果脚本在 scripts 目录下，用法同jtask；如果脚本不在scripts目录下，则需要输入完整路径，用法同otask。"
-    echo -e "\n注意：jtask, otask, mtask均为同一脚本的不同名字（j=jd, o=own, m=my），三者仅用来在crontab.list中区分不同类型的cron，以方便自动增删任务，手动运行直接运行jtask即可。"
+    echo -e "jtask命令运行 jd_scripts 脚本，如果已经将非 jd_scripts 脚本复制到 scripts 目录下，也可以使用此命令，用法为："
+    echo -e "1.$cmd_jtask <js_name>        # 依次执行，如果设置了随机延迟并且当时时间不在0-2、30-31、59分内，将随机延迟一定秒数"
+    echo -e "2.$cmd_jtask <js_name> now    # 依次执行，无论是否设置了随机延迟，均立即运行，前台会输出日志，同时记录在日志文件中"
+    echo -e "3.$cmd_jtask <js_name> conc   # 并发执行，无论是否设置了随机延迟，均立即运行，前台不产生日志，直接记录在日志文件中"
+    echo -e "4.$cmd_jtask runall           # 依次运行所有jd_scripts中的非挂机脚本，非常耗时"
+    echo -e "5.$cmd_jtask hangup           # 重启挂机程序"
+    echo -e "6.$cmd_jtask resetpwd         # 重置控制面板用户名和密码"
+    echo -e "\notask命令运行 own 脚本，需要输入脚本的绝对路径或相对路径（定时任务中必须是绝对路径），otask会将该脚本复制到 scripts 目录下再运行，用法为："
+    echo -e "1.$cmd_otask <js_path>        # 依次执行，如果设置了随机延迟并且当时时间不在0-2、30-31、59分内，将随机延迟一定秒数"
+    echo -e "2.$cmd_otask <js_path> now    # 依次执行，无论是否设置了随机延迟，均立即运行，前台会输出日志，同时记录在日志文件中"
+    echo -e "3.$cmd_otask <js_path> conc   # 并发执行，无论是否设置了随机延迟，均立即运行，前台不产生日志，直接记录在日志文件中"
+    echo -e "\nmtask命令运行你自己添加的脚本，用法同jtask，如果脚本不在scripts目录下，则需要输入完整路径（同otask）。jtask otask mtask均为同一脚本的不同名字，三者仅用来在crontab.list中区分不同类型的任务，以方便自动增删任务，手动运行直接运行jtask即可。"
     echo -e "\n当前scripts目录下有以下脚本可以运行："
     for ((i=0; i<${#array_scripts[*]}; i++)); do
         echo -e "$(($i + 1)).${array_scripts_name[i]}：${array_scripts[i]}"
@@ -146,7 +157,7 @@ find_file_and_path () {
         fi
     done
 
-    if [[ -z $file_name ]] && [ -f $para ]; then
+    if [ -f $para ]; then
         local file_name_tmp3=$(echo $para | awk -F "/" '{print $NF}' | perl -pe "s|\.js||")
         if [[ $(grep -E "^$file_name_tmp3$" $list_task_jd_scripts) ]]; then
             echo -e "\njd_scripts项目存在同名文件$file_name_tmp3.js，不复制$para，直接执行$dir_scripts/$file_name_tmp3.js ...\n"
@@ -156,20 +167,6 @@ find_file_and_path () {
         fi
         file_name=$file_name_tmp3
         which_path=$dir_scripts
-    fi
-}
-
-## 运行自定义脚本
-run_task_finish () {
-    if [[ $EnableTaskFinishShell == true ]]; then
-        echo -e "\n--------------------------------------------------------------\n"
-        if [ -f $file_task_finish_shell ]; then
-            echo -e "开始执行$file_task_finish_shell...\n"
-            . $file_task_finish_shell
-            echo -e "$file_task_finish_shell执行完毕...\n"
-        else
-           echo -e "$file_task_finish_shell文件不存在，跳过执行...\n"
-        fi
     fi
 }
 
@@ -184,7 +181,7 @@ run_hungup () {
         if type pm2 >/dev/null 2>&1; then
             pm2 stop $file.js 2>/dev/null
             pm2 flush
-            pm2 start -a $file.js --watch "$file.js" --name=$file
+            pm2 start -a $file.js --watch "$dir_scripts/$file.js" --name=$file
         else
             if [[ $(ps -ef | grep "$file" | grep -v "grep") != "" ]]; then
                 ps -ef | grep "$file" | grep -v "grep" | awk '{print $2}' | xargs kill -9
@@ -200,7 +197,7 @@ run_hungup () {
 ## 重置密码
 reset_user_password () {
     cp -f $file_auth_sample $file_auth_user
-    echo -e "控制面板重置成功，用户名：admin，密码：adminadmin\n"
+    echo -e "控制面板重置成功，用户名：admin，密码：password\n"
 }
 
 ## 一次性运行所有jd_scripts脚本
@@ -232,13 +229,12 @@ run_normal () {
         count_user_sum
         export_all_env all
         [[ $# -eq 1 ]] && random_delay
-        [[ $user_sum -ge 50 ]] && rm -rf $dir_config/* &>/dev/null
+        [[ $user_sum -ge 60 ]] && rm -rf $dir_config/* &>/dev/null
         log_time=$(date "+%Y-%m-%d-%H-%M-%S")
         log_path="$dir_log/$file_name/$log_time.log"
         make_dir "$dir_log/$file_name"
         cd $which_path
         node $file_name.js 2>&1 | tee $log_path
-        run_task_finish "$file_name" 2>&1 | tee -a $log_path
     else
         echo -e "\n $p 脚本不存在，请确认...\n"
         usage
@@ -254,7 +250,7 @@ run_concurrent () {
         import_config_and_check "$file_name"
         update_crontab
         count_user_sum
-        [[ $user_sum -ge 50 ]] && rm -rf $dir_config/* &>/dev/null
+        [[ $user_sum -ge 60 ]] && rm -rf $dir_config/* &>/dev/null
         make_dir $dir_log/$file_name
         log_time=$(date "+%Y-%m-%d-%H-%M-%S.%N")
         echo -e "\n各账号间已经在后台开始并发执行，前台不输入日志，日志直接写入文件中。\n"
@@ -267,32 +263,6 @@ run_concurrent () {
             cd $which_path
             node $file_name.js &>$log_path &
         done
-        echo -e "账号并发任务正在执行中，等待ing...\n"
-        wait
-        echo -e "所有并发任务已全部完成，如需查看执行结果，请直接查看相关日志...\n"
-    else
-        echo -e "\n $p 脚本不存在，请确认...\n"
-        usage
-    fi
-}
-
-## 指定只运行某一个Cookie
-run_specify () {
-    local p=$1
-    local ck_num=$2
-    find_file_and_path $p
-    if [[ $file_name ]] && [[ $which_path ]]; then
-        import_config_and_check "$file_name"
-        update_crontab
-        count_user_sum
-        export_all_env $ck_num
-        [[ $user_sum -ge 50 ]] && rm -rf $dir_config/* &>/dev/null
-        make_dir $dir_log/$file_name
-        log_time=$(date "+%Y-%m-%d-%H-%M-%S")
-        log_path="$dir_log/$file_name/${log_time}_${ck_num}.log"
-        cd $which_path
-        node $file_name.js 2>&1 | tee $log_path
-        run_task_finish "$file_name" 2>&1 | tee -a $log_path
     else
         echo -e "\n $p 脚本不存在，请确认...\n"
         usage
@@ -300,50 +270,43 @@ run_specify () {
 }
 
 ## 命令检测
-main () {
-    case $# in
-        0)
-            echo
-            usage
-            ;;
-        1)
-            case $1 in
-                hangup)
-                    run_hungup
-                    ;;
+case $# in
+    0)
+        echo
+        usage
+        ;;
+    1)
+        case $1 in
+            hangup)
+                run_hungup
+                ;;
             resetpwd)
                 reset_user_password
                 ;;
-                runall)
-                    run_all_jd_scripts
-                    ;;
-                *)
-                    run_normal $1
-                    ;;
-            esac
-            ;;
-        2)
-            case $2 in
-                now)
-                    run_normal $1 $2
-                    ;;
-                conc)
-                    run_concurrent $1 $2
-                    ;;
-                [1-9] | [1-2][0-9])
-                    run_specify $1 $2
-                    ;;
-                *)
-                    echo -e "\n命令输入错误...\n"
-                    usage
-                    ;;
-            esac
-            ;;
-        *)
-            echo -e "\n命令过多...\n"
-            usage
-            ;;
-    esac
-}
-
-main "$@"
+            runall)
+                run_all_jd_scripts
+                ;;
+            *)
+                run_normal $1
+                ;;
+        esac
+        ;;
+    2)
+        case $2 in
+            now)
+                run_normal $1 $2
+                ;;
+            conc)
+                run_concurrent $1 $2
+                ;;
+            *)
+                echo -e "\n命令输入错误...\n"
+                usage
+                ;;
+        esac
+        ;;
+    *)
+        echo -e "\n命令过多...\n"
+        usage
+        ;;
+esac

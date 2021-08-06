@@ -18,22 +18,8 @@ link_shell
 define_cmd
 fix_config
 
-## npm install 子程序，判断是否为安卓，判断是否安装有yarn
-npm_install_sub () {
-    local cmd_1 cmd_2
-    type yarn >/dev/null 2>&1 && cmd_1=yarn || cmd_1=npm
-    [[ $is_termux -eq 1 ]] && cmd_2="--no-bin-links" || cmd_2=""
-    $cmd_1 install $cmd_2 --registry=https://registry.npm.taobao.org || $cmd_1 install $cmd_2
-}
-
 ## 预处理
-if [ ! -d $dir_panel/node_modules ];then
-    pushd $dir_panel
-    echo -e "运行 npm install...\n"
-    npm_install_sub
-    [[ $? -ne 0 ]] && echo -e "\nnpm install 运行不成功，请进入 $dir_panel 目录后手动运行 npm install...\n"
-    popd
-fi
+[ ! -s $file_auth_user ] && cp -f $file_auth_sample $file_auth_user
 
 ## 复制ttyd
 if [[ $is_termux -eq 1 ]] && type ! ttyd >/dev/null 2>&1; then

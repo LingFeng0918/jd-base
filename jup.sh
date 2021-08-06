@@ -3,7 +3,8 @@
 ## 文件路径、脚本网址
 dir_shell=$(dirname $(readlink -f "$0"))
 dir_root=$dir_shell
-url_scripts=${JD_SCRIPTS_URL:-git@jd_scripts_gitee:lxk0301/jd_scripts.git}
+url_shell=${JD_SHELL_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git}
+url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
 send_mark=$dir_shell/send_mark
 
 ## 导入通用变量与函数
@@ -159,21 +160,55 @@ gen_list_own () {
 }
 
 ## 检测cron的差异，$1：脚本清单文件路径，$2：cron任务清单文件路径，$3：增加任务清单文件路径，$4：删除任务清单文件路径
+#diff_cron () {
+#    make_dir $dir_list_tmp
+#    local list_scripts="$1"
+#    local list_task="$2"
+#    local list_add="$3"
+#    local list_drop="$4"
+#    if [ -s $list_task ] && [ -s $list_scripts ]; then
+#        diff $list_scripts $list_task | grep "<" | awk '{print $2}' > $list_add
+#        diff $list_scripts $list_task | grep ">" | awk '{print $2}' > $list_drop
+#    elif [ ! -s $list_task ] && [ -s $list_scripts ]; then
+#        cp -f $list_scripts $list_add      
+#    elif [ -s $list_task ] && [ ! -s $list_scripts ]; then
+#        cp -f $list_task $list_drop
+#    fi
+#}
+
 diff_cron () {
     make_dir $dir_list_tmp
     local list_scripts="$1"
     local list_task="$2"
     local list_add="$3"
     local list_drop="$4"
-    if [ -s $list_task ] && [ -s $list_scripts ]; then
-        diff $list_scripts $list_task | grep "<" | awk '{print $2}' > $list_add
-        diff $list_scripts $list_task | grep ">" | awk '{print $2}' > $list_drop
+    if [ -s $list_task ]; then
+        grep -vwf $list_task $list_scripts > $list_add
     elif [ ! -s $list_task ] && [ -s $list_scripts ]; then
-        cp -f $list_scripts $list_add      
-    elif [ -s $list_task ] && [ ! -s $list_scripts ]; then
+        cp -f $list_scripts $list_add
+    fi
+    if [ -s $list_scripts ]; then
+        grep -vwf $list_scripts $list_task > $list_drop
+    else
         cp -f $list_task $list_drop
     fi
 }
+
+
+## 更新docker-entrypoint，docker专用
+update_docker_entrypoint () {
+    if [[ $JD_DIR ]] && [[ $(cat $dir_root/docker/docker-entrypoint.sh) != $(cat /usr/local/bin/docker-entrypoint.sh) ]]; then
+        cp -f $dir_root/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+        chmod 777 /usr/local/bin/docker-entrypoint.sh
+    fi
+}
+
+## 更新bot.py，docker专用
+#update_bot_py() {
+#    if [[ $JD_DIR ]] && [[ $ENABLE_TG_BOT == true ]] && [ -f $dir_config/bot.py ] && [[ $(diff $dir_root/bot/bot.py $dir_config/bot.py) ]]; then
+#        cp -f $dir_root/bot/bot.py $dir_config/bot.py
+ #   fi
+#}
 
 ## 更新docker通知
 update_docker () {
@@ -428,15 +463,26 @@ update_shell () {
     ## 更新jup任务的cron
     random_update_jup_cron
 
-    ## 重置仓库romote url
-    if [[ $JD_DIR ]] && [[ $ENABLE_RESET_REPO_URL == true ]]; then
-        reset_romote_url $dir_scripts $url_scripts
-    fi
-
-    ## 记录bot程序md5
+ ## 重置仓库romote url
+#    if [[ $JD_DIR ]] && [[ $ENABLE_RESET_REPO_URL == true ]]; then
+#       reset_romote_url $dir_shell $url_shell
+#       reset_romote_url $dir_scripts $url_scripts
+#    fi
+   ## 记录bot程序md5
     jbot_md5sum_old=$(cd $dir_bot; find . -type f \( -name "*.py" -o -name "*.ttf" \) | xargs md5sum)
-
-    rm -rf $dir_shell/.git &>/dev/null
+    
+    ## 更新shell
+    git_pull_scripts $dir_shell
+    if [[ $exit_status -eq 0 ]]; then
+        echo -e "\n更新$dir_shell成功...\n"
+        make_dir $dir_config
+        cp -f $file_config_sample $dir_config/config.sample.sh
+        update_docker_entrypoint
+   #     update_bot_py
+        detect_config_version
+    else
+        echo -e "\n更新$dir_shell失败，请检查原因...\n"
+    fi
 }
 
 
@@ -446,12 +492,26 @@ update_scripts () {
     ## 更新前先存储package.json和githubAction.md的内容
     [ -f $dir_scripts/package.json ] && scripts_depend_old=$(cat $dir_scripts/package.json)
     [ -f $dir_scripts/githubAction.md ] && cp -f $dir_scripts/githubAction.md $dir_list_tmp/githubAction.md
+	
+    if [ -d ${dir_scripts}/.git ]; then
+       [ -z $JD_SCRIPTS_URL ] && [[ -z $(grep $url_scripts $dir_scripts/.git/config) ]] && rm -rf $dir_scripts
+        if [[ ! -z $JD_SCRIPTS_URL ]]; then
+           if [[ -z $(grep $JD_SCRIPTS_URL $dir_scripts/.git/config) ]]; then
+              rm -rf $dir_scripts
+           fi
+        fi
+     else
+         rm -rf $dir_scripts
+    fi
+
+    url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/chinnkarahoi/jd_scripts.git}
+    branch_scripts=${JD_SCRIPTS_BRANCH:-master}
 
     ## 更新或克隆scripts
     if [ -d $dir_scripts/.git ]; then
-        git_pull_scripts $dir_scripts
+        git_pull_scripts $dir_scripts 
     else
-        git_clone_scripts $url_scripts $dir_scripts "master"
+        git_clone_scripts $url_scripts $dir_scripts $branch_scripts
     fi
 
     if [[ $exit_status -eq 0 ]]; then
@@ -544,27 +604,8 @@ fix_crontab () {
     fi
 }
 
-## 在最开始的提醒
-start_notify () {
-    if [[ $JD_DIR ]] && [[ $(uname -m) == armv7* ]] && ! curl api.jd.com &>/dev/null; then
-        echo -e "检测到主机构架为armv7，并且无法访问网络，可能是未设置security-opt的原因...\n\n请按照 https://hub.docker.com/r/nevinee/jd 创建容器..."
-        echo -e "等待15秒后继续执行$cmd_jup...\n"
-        sleep 15
-    fi
-}
-
-## 在最后的提醒
-end_notify () {
-    if [[ $JD_DIR ]]; then
-        if [ -f /usr/local/bin/docker-entrypoint.sh ] && [ ! -d /etc/cont-init.d ] && [ ! -d /etc/services.d ]; then
-            notify "镜像更新通知" "Docker镜像的启动方式已从docker-entrypoint调整为s6-overlay，请更新镜像（无需更新配置文件），旧的镜像即将无法使用。" &>/dev/null
-        fi
-    fi
-}
-
 ## 主函数
 main () {
-    start_notify
     case $# in
         1)
             case $1 in
@@ -605,7 +646,6 @@ main () {
     esac
     fix_config
     fix_crontab
-    end_notify
     exit 0
 }
 

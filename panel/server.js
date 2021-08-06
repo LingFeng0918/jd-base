@@ -91,7 +91,7 @@ async function step1() {
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'zh-cn',
                 'Referer': 'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wq.jd.com/passport/LoginRedirect?state=' + timeStamp + '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
+                'User-Agent': `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
                 'Host': 'plogin.m.jd.com'
             }
         });
@@ -124,7 +124,7 @@ async function step2() {
                 'Accept': 'application/json, text/plain, */*',
                 'Cookie': cookies,
                 'Referer': 'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=' + timeStamp + '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
+                'User-Agent': `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
                 'Host': 'plogin.m.jd.com',
             }
         });
@@ -162,7 +162,7 @@ async function checkLogin() {
                 'Connection': 'Keep-Alive',
                 'Content-Type': 'application/x-www-form-urlencoded; Charset=UTF-8',
                 'Accept': 'application/json, text/plain, */*',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
+                'User-Agent': `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
             }
         });
 
@@ -312,22 +312,21 @@ app.use(session({
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-var router = createProxyMiddleware({
-    target: 'http://localhost:7681',
-    ws: true,
-    changeOrigin: true,
-    pathRewrite: {
-        '^/shell': '/',
-    },
-})
+
 // ttyd proxy
-app.use('/shell',function(request, response){
-    if (request.session.loggedin) {
-        router
-    }else {
-        response.redirect('/');
-    }
-});
+app.use('/shell', createProxyMiddleware({ 
+    target: 'http://localhost:7681', 
+    ws: true, 
+    changeOrigin: true, 
+    pathRewrite: {
+        '^/shell': '/', 
+    },
+    onProxyReq(proxyReq, req, res) {
+            if (!req.session.loggedin) {
+              res.redirect('/');
+            }
+        },	
+}));
 
 /**
  * 登录页面
@@ -806,6 +805,85 @@ app.get('/api/scripts/:dir/:file', function (request, response) {
 
 });
 
+/**
+ * 更新已经存在的人的cookie & 自动添加新用户
+ * */
+app.post('/updateCookie', function (request, response) {
+    if (request.body.cookie) {
+        const cookie = request.body.cookie;
+        const userMsg = request.body.userMsg; //备注
+        const content = getFileContentByName(confFile);
+        const lines = content.split('\n');
+        const pt_pin = cookie.match(/pt_pin=.+?;/)[0];
+        let updateFlag = false;
+        let lastIndex = 0;
+        let maxCookieCount = 0;
+        let CK_AUTO_ADD = true
+        if (content.match(/CK_AUTO_ADD=".+?"/)){CK_AUTO_ADD = content.match(/CK_AUTO_ADD=".+?"/)[0].split('"')[1]}
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            if (line.startsWith('Cookie')) {
+                maxCookieCount = Math.max(
+                    Number(line.split('=')[0].split('Cookie')[1]),
+                    maxCookieCount
+                );
+                lastIndex = i;
+                if (
+                    line.match(/pt_pin=.+?;/) &&
+                    line.match(/pt_pin=.+?;/)[0] == pt_pin
+                ) {
+                    const head = line.split('=')[0];
+                    //const newLine = [head, '=', '"', cookie, '"', '  ##', userMsg].join
+                    const newLine = [head, '=', '"', cookie, '"'].join(
+                        ''
+                    );
+                    lines[i] = newLine;
+                    updateFlag = true;
+	                var lineNext = lines[i+1];
+	                if (
+	                    lineNext.match(/上次更新：/)
+		                ) {
+		                    const bz = lineNext.split('备注：')[1];
+		                	const newLine = ['## ', pt_pin, ' 上次更新：', new Date().toLocaleDateString(), ' 备注：', bz ? bz : userMsg].join('');
+                    		lines[i+1] = newLine;
+	                	} else {
+		                	const newLine = ['## ', pt_pin, ' 上次更新：', new Date().toLocaleDateString(), ' 备注：', userMsg].join('');
+			            	lines.splice(lastIndex + 1, 0, newLine);
+			        }
+                }
+            }
+        }
+        let CookieCount = Number(maxCookieCount) + 1;
+        if (!updateFlag && CK_AUTO_ADD === 'true') {
+            let newLine = [
+                'Cookie',
+                CookieCount,
+                '=',
+                '"',
+                cookie,
+                '"',
+                //'  #',
+                //userMsg,
+            ].join('');
+            //提交备注
+            lines.splice(lastIndex + 1, 0, newLine);
+            newLine = ['## ', pt_pin, ' 上次更新：', new Date().toLocaleDateString(), ' 备注：', userMsg].join('');
+            lines.splice(lastIndex + 2, 0, newLine);
+        }
+        saveNewConf('config.sh', lines.join('\n'));
+        response.send({
+            err: 0,
+            msg: updateFlag ?
+                `[更新成功]\n当前用户量:(${maxCookieCount})` : CK_AUTO_ADD === 'true' ? `[新的Cookie]\n当前用户量:(${CookieCount})` : `服务器配置不自动添加Cookie\n如需启用请添加export CK_AUTO_ADD="true"`,
+                //`[更新成功]\n本服用户量:(${maxCookieCount})` : `非本服用户\n本服用户量:(${CookieCount})`,
+        });
+    } else {
+        response.send({
+            msg: '参数错误',
+            err: -1
+        });
+    }
+});
 
 checkConfigFile()
 
