@@ -41,7 +41,52 @@ random_update_jup_cron () {
         crontab $list_crontab_user
     fi
 }
-
+## 软连接及其原始文件对应关系
+link_name=(
+    jup
+)
+original_name=(
+    jup.sh
+)
+## 创建软连接
+link_shell() {
+    if [[ $SYSTEM = Android ]]; then
+        local path="/data/data/com.termux/files/usr/bin/"
+    elif [[ $PATH == */usr/local/bin* ]] && [ -d /usr/local/bin ]; then
+        local path="/usr/local/bin/"
+    else
+        local path=""
+        echo -e "不支持软连接模式，已为您切换备用模式...\n"
+    fi
+    if [[ $path ]]; then
+        for ((i = 0; i < ${#link_name[*]}; i++)); do
+            link_shell_sub "$path${link_name[i]}" "$dir_shell/${original_name[i]}"
+        done
+    fi
+}
+## 定义各命令
+define_cmd() {
+    local cmd_prefix cmd_suffix
+    if type jd >/dev/null 2>&1; then
+        cmd_suffix=""
+        if [[ -x "$dir_shell/jup.sh" ]]; then
+            cmd_prefix=""
+        else
+            cmd_prefix="bash "
+        fi
+    else
+        cmd_suffix=".sh"
+        if [[ -x "$dir_shell/jup.sh" ]]; then
+            cmd_prefix="$dir_shell/"
+        else
+            cmd_prefix="bash $dir_shell/"
+        fi
+        [[ -x "$(dirname $dir_shell)/jup.sh" ]] && cmd_prefix="bash $(dirname $dir_shell)/"
+    fi
+    for ((i = 0; i < ${#link_name[*]}; i++)); do
+        export cmd_${link_name[i]}="${cmd_prefix}${link_name[i]}${cmd_suffix}"
+    done
+}
 ## 重置仓库remote url，docker专用，$1：要重置的目录，$2：要重置为的网址
 reset_romote_url () {
     local dir_current=$(pwd)
