@@ -67,7 +67,7 @@ link_shell() {
 ## 定义各命令
 define_cmd() {
     local cmd_prefix cmd_suffix
-    if type jd >/dev/null 2>&1; then
+    if type jup >/dev/null 2>&1; then
         cmd_suffix=""
         if [[ -x "$dir_shell/jup.sh" ]]; then
             cmd_prefix=""
