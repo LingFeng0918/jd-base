@@ -1,4 +1,4 @@
-    FROM node:15.9.0-alpine3.12
+    FROM node:lts-alpine
     ARG JD_SHELL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git
     ARG JD_SHELL_BRANCH=v4
     ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
@@ -36,27 +36,27 @@
         && rm -rf /var/cache/apk/* \
         && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
         && echo "Asia/Shanghai" > /etc/timezone \
-        && git clone -b $JD_SHELL_BRANCH $JD_SHELL $JD_DIR \
+        && git clone -b ${JD_SHELL_BRANCH} ${JD_SHELL} ${JD_DIR} \
         && npm install \
         && npm install -g pm2 \
-        && ln -sf $JD_DIR/jtask.sh /usr/local/bin/jd \
-        && ln -sf $JD_DIR/jtask.sh /usr/local/bin/jtask \
-        && ln -sf $JD_DIR/jtask.sh /usr/local/bin/otask \
-        && ln -sf $JD_DIR/jtask.sh /usr/local/bin/mtask \
-        && ln -sf $JD_DIR/jup.sh /usr/local/bin/git_pull \
-        && ln -sf $JD_DIR/jup.sh /usr/local/bin/jup \
-        && ln -sf $JD_DIR/jlog.sh /usr/local/bin/rm_log \
-        && ln -sf $JD_DIR/jlog.sh /usr/local/bin/jlog \
-        && ln -sf $JD_DIR/jcode.sh /usr/local/bin/export_sharecodes \
-        && ln -sf $JD_DIR/jcode.sh /usr/local/bin/jcode \
-        && ln -sf $JD_DIR/jcsv.sh /usr/local/bin/jcsv \
-	&& ln -sf /usr/bin/python3 /usr/bin/python \
+        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/jd \
+        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/jtask \
+        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/otask \
+        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/mtask \
+        && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/git_pull \
+        && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/jup \
+        && ln -sf ${JD_DIR}/jlog.sh /usr/local/bin/rm_log \
+        && ln -sf ${JD_DIR}/jlog.sh /usr/local/bin/jlog \
+        && ln -sf ${JD_DIR}/jcode.sh /usr/local/bin/export_sharecodes \
+        && ln -sf ${JD_DIR}/jcode.sh /usr/local/bin/jcode \
+        && ln -sf ${JD_DIR}/jcsv.sh /usr/local/bin/jcsv \
+	    && ln -sf /usr/bin/python3 /usr/bin/python \
         && pip3 install --upgrade pip \
-        && cd $JD_DIR/jbot \
+        && cd ${JD_DIR}/jbot \
         && pip3 install -r requirements.txt \
-        && cp -f $JD_DIR/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
+        && cp -f ${JD_DIR}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
         && chmod 777 /usr/local/bin/docker-entrypoint.sh \
-        && chmod 777 $JD_DIR/*.sh \
+        && chmod 777 ${JD_DIR}/*.sh \
         && rm -rf /root/.npm \
 	&& apk del .build \
         && rm -rf /root/.cache \
