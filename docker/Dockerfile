@@ -12,7 +12,7 @@
         ENABLE_RESET_REPO_URL=true \
         JD_SHELL_URL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git \
         JD_SCRIPTS_URL=https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git
-    WORKDIR ${JD_DIR}
+	WORKDIR ${JD_DIR}
     RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
         && apk update -f \
         && apk upgrade \
@@ -25,18 +25,20 @@
                                  tzdata \
                                  perl \
                                  openssh-client \
-				                 python3 \
+								 python3 \
 		                         py3-pip \
 				                 zlib-dev \
                                  jpeg-dev \
-	&& apk add --no-cache --virtual .build \
-        			 gcc \
-        			 python3-dev \
-        			 musl-dev \
+	    && apk add --no-cache --virtual .build \
+        			             gcc \
+        			             python3-dev \
+        			             musl-dev \
         && rm -rf /var/cache/apk/* \
         && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
         && echo "Asia/Shanghai" > /etc/timezone \
         && git clone -b ${JD_SHELL_BRANCH} ${JD_SHELL} ${JD_DIR} \
+		&& git config --global user.email "LingFeng0918@@users.noreply.github.com" \
+		&& git config --global user.name "LingFeng0918" \
         && npm install \
         && npm install -g pm2 \
         && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/jd \
@@ -67,9 +69,8 @@
         && cnpm i -g typescript  \
         && cnpm i -g ts-node \   
         && pip3 install requests
-    WORKDIR ${JD_DIR}/app
+	WORKDIR ${JD_DIR}/app
     RUN yarn
     EXPOSE 6789
     CMD [ "node", "index.js" ]
-    WORKDIR ${JD_DIR}
     ENTRYPOINT ["docker-entrypoint.sh"]
