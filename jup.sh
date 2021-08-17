@@ -534,7 +534,7 @@ update_shell () {
 ## 更新scripts
 update_scripts () {
     echo -e "--------------------------------------------------------------\n"
-    ## 更新前先存储package.json和githubAction.md的内容
+    echo -e "更新前先存储package.json和githubAction.md的内容"
     [ -f $dir_scripts/package.json ] && scripts_depend_old=$(cat $dir_scripts/package.json)
     [ -f $dir_scripts/githubAction.md ] && cp -f $dir_scripts/githubAction.md $dir_list_tmp/githubAction.md
 	
@@ -552,7 +552,7 @@ update_scripts () {
     url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
     branch_scripts=${JD_SCRIPTS_BRANCH:-master}
 
-    ## 更新或克隆scripts
+   echo -e " 更新或克隆scripts"
     if [ -d $dir_scripts/.git ]; then
         git_pull_scripts $dir_scripts 
     else
