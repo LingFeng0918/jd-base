@@ -34,7 +34,7 @@ if [ ! -d $dir_own ]; then
 fi
 
  echo -e "\n======================== 2. 更新源代码 ========================\n"
-jup shell
+bash jup shell
 bash jup scripts
  echo
 
