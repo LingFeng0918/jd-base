@@ -41,52 +41,7 @@ random_update_jup_cron () {
         crontab $list_crontab_user
     fi
 }
-## 软连接及其原始文件对应关系
-link_name=(
-    jup
-)
-original_name=(
-    jup.sh
-)
-## 创建软连接
-link_shell() {
-    if [[ $SYSTEM = Android ]]; then
-        local path="/data/data/com.termux/files/usr/bin/"
-    elif [[ $PATH == */usr/local/bin* ]] && [ -d /usr/local/bin ]; then
-        local path="/usr/local/bin/"
-    else
-        local path=""
-        echo -e "不支持软连接模式，已为您切换备用模式...\n"
-    fi
-    if [[ $path ]]; then
-        for ((i = 0; i < ${#link_name[*]}; i++)); do
-            link_shell_sub "$path${link_name[i]}" "$dir_shell/${original_name[i]}"
-        done
-    fi
-}
-## 定义各命令
-define_cmd() {
-    local cmd_prefix cmd_suffix
-    if type jup >/dev/null 2>&1; then
-        cmd_suffix=""
-        if [[ -x "$dir_shell/jup.sh" ]]; then
-            cmd_prefix=""
-        else
-            cmd_prefix="bash "
-        fi
-    else
-        cmd_suffix=".sh"
-        if [[ -x "$dir_shell/jup.sh" ]]; then
-            cmd_prefix="$dir_shell/"
-        else
-            cmd_prefix="bash $dir_shell/"
-        fi
-        [[ -x "$(dirname $dir_shell)/jup.sh" ]] && cmd_prefix="bash $(dirname $dir_shell)/"
-    fi
-    for ((i = 0; i < ${#link_name[*]}; i++)); do
-        export cmd_${link_name[i]}="${cmd_prefix}${link_name[i]}${cmd_suffix}"
-    done
-}
+
 ## 重置仓库remote url，docker专用，$1：要重置的目录，$2：要重置为的网址
 reset_romote_url () {
     local dir_current=$(pwd)
@@ -143,7 +98,7 @@ count_own_repo_sum () {
 gen_own_dir_and_path () {
     local scripts_path_num="-1"
     local repo_num tmp1 tmp2 tmp3 tmp4 tmp5 dir
-    
+
     if [[ $own_repo_sum -ge 1 ]]; then
         for ((i=1; i<=$own_repo_sum; i++)); do
             repo_num=$((i - 1))
@@ -215,7 +170,7 @@ gen_list_own () {
 #        diff $list_scripts $list_task | grep "<" | awk '{print $2}' > $list_add
 #        diff $list_scripts $list_task | grep ">" | awk '{print $2}' > $list_drop
 #    elif [ ! -s $list_task ] && [ -s $list_scripts ]; then
-#        cp -f $list_scripts $list_add      
+#        cp -f $list_scripts $list_add
 #    elif [ -s $list_task ] && [ ! -s $list_scripts ]; then
 #        cp -f $list_task $list_drop
 #    fi
@@ -352,9 +307,9 @@ del_cron () {
     local detail type2 detail2
     if [ -s $list_drop ] && [ -s $list_crontab_user ]; then
         detail=$(cat $list_drop)
-        [[ $type == jtask ]] && type2="jd_scipts脚本" 
+        [[ $type == jtask ]] && type2="jd_scipts脚本"
         [[ $type == otask ]] && type2="own脚本"
-        
+
         echo -e "开始尝试自动删除$type2的定时任务...\n"
         for cron in $detail; do
             local tmp=$(echo $cron | perl -pe "s|/|\.|g")
@@ -491,13 +446,9 @@ usage () {
 record_time () {
     echo "
 --------------------------------------------------------------
-
 系统时间：$(date "+%Y-%m-%d %H:%M:%S")
-
 脚本根目录：$dir_root
-
 jd_scripts目录：$dir_scripts
-
 own脚本目录：$dir_own
 "
 }
@@ -515,7 +466,7 @@ update_shell () {
 #    fi
    ## 记录bot程序md5
     jbot_md5sum_old=$(cd $dir_bot; find . -type f \( -name "*.py" -o -name "*.ttf" \) | xargs md5sum)
-    
+
     ## 更新shell
     git_pull_scripts $dir_shell
     if [[ $exit_status -eq 0 ]]; then
@@ -534,10 +485,10 @@ update_shell () {
 ## 更新scripts
 update_scripts () {
     echo -e "--------------------------------------------------------------\n"
-    echo -e "更新前先存储package.json和githubAction.md的内容"
+    ## 更新前先存储package.json和githubAction.md的内容
     [ -f $dir_scripts/package.json ] && scripts_depend_old=$(cat $dir_scripts/package.json)
     [ -f $dir_scripts/githubAction.md ] && cp -f $dir_scripts/githubAction.md $dir_list_tmp/githubAction.md
-	
+
     if [ -d ${dir_scripts}/.git ]; then
        [ -z $JD_SCRIPTS_URL ] && [[ -z $(grep $url_scripts $dir_scripts/.git/config) ]] && rm -rf $dir_scripts
         if [[ ! -z $JD_SCRIPTS_URL ]]; then
@@ -552,9 +503,9 @@ update_scripts () {
     url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
     branch_scripts=${JD_SCRIPTS_BRANCH:-master}
 
-   echo -e " 更新或克隆scripts"
+    ## 更新或克隆scripts
     if [ -d $dir_scripts/.git ]; then
-        git_pull_scripts $dir_scripts 
+        git_pull_scripts $dir_scripts
     else
         git_clone_scripts $url_scripts $dir_scripts $branch_scripts
     fi
@@ -566,7 +517,7 @@ update_scripts () {
         [ ! -d $dir_scripts/node_modules ] && npm_install_1 $dir_scripts
         [ -f $dir_scripts/package.json ] && scripts_depend_new=$(cat $dir_scripts/package.json)
         [[ "$scripts_depend_old" != "$scripts_depend_new" ]] && npm_install_2 $dir_scripts
-        
+
         ## diff cron
         gen_list_task
         diff_cron $list_task_jd_scripts $list_task_user $list_task_add $list_task_drop
