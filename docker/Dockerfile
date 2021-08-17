@@ -5,7 +5,7 @@
         LANG=zh_CN.UTF-8 \
         SHELL=/bin/bash \
         PS1="\u@\h:\w \$ " \
-        JD_DIR=/root/jd \
+        JD_DIR=/jd \
         ENABLE_TTYD=true \
         ENABLE_WEB_PANEL=true \
         ENABLE_HANGUP=false \
