@@ -43,7 +43,7 @@ else
 fi
 
 if [[ $? -eq 0 ]]; then
-    echo -e "控制面板启动成功，如未修改，则初始用户名和密码为：admin/adminadmin...\n"
+    echo -e "控制面板启动成功，如未修改，则初始用户名和密码为：admin/password...\n"
 else
     echo -e "控制面板启动失败...\n"
 fi
