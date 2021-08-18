@@ -34,8 +34,8 @@ if [ ! -d $dir_own ]; then
 fi
 
  echo -e "\n======================== 2. 更新源代码 ========================\n"
-sudo jup shell
-sudo jup scripts
+sudo bash jup shell
+sudo bash jup scripts
  echo
 
 echo -e "======================== 3. 检测配置文件 ========================\n"
