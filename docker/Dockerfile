@@ -41,10 +41,10 @@
 		&& git config --global user.name "LingFeng0918" \
         && npm install \
         && npm install -g pm2 \
-        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/jd \
-        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/jtask \
-        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/otask \
-        && ln -sf ${JD_DIR}/jtask.sh /usr/local/bin/mtask \
+        && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/jd \
+        && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/jtask \
+        && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/otask \
+        && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/mtask \
         && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/git_pull \
         && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/jup \
         && ln -sf ${JD_DIR}/jlog.sh /usr/local/bin/rm_log \
@@ -73,4 +73,5 @@
     RUN yarn
     EXPOSE 6789
     CMD [ "node", "index.js" ]
+    WORKDIR ${JD_DIR}
     ENTRYPOINT ["docker-entrypoint.sh"]
