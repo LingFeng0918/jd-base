@@ -54,7 +54,7 @@ env_name=(
     JD818_SHARECODES
     JDHEALTH_SHARECODES
     CITY_SHARECODES
-    
+
 )
 var_name=(
     Cookie
@@ -306,7 +306,7 @@ fix_config () {
     if [ ! -s $list_crontab_user ]; then
         echo -e "复制一份 $list_crontab_sample 为 $list_crontab_user，这是你自己的 crontab.list\n"
         cp -fv $list_crontab_sample $list_crontab_user
-        echo 
+        echo
     fi
     perl -i -pe "{
         s|CMD_UPDATE|$cmd_jup|g;
