@@ -1,2 +1,1 @@
-#jtask.sh
-jup.sh
+jtask.sh

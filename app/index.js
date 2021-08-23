@@ -2,7 +2,7 @@
 const QYWX_KEY = '' || process.env.QYWX_KEY;
 const QYWX_AM = '' || process.env.QYWX_AM;
 const UPDATE_API = 'http:\\127.0.0.1:5678/updateCookie' || process.env.UPDATE_API;
- 
+
 const express = require('express');
 const got = require('got');
 const path = require('path');
@@ -80,9 +80,9 @@ const getCookie = (response) => {
 async function step1() {
   const timeStamp = new Date().getTime();
   const loginUrl =
-    'https://plogin.m.jd.com/cgi-bin/mm/new_login_entrance?lang=chs&appid=300' +
-    `&returnurl=https://wq.jd.com/passport/LoginRedirect?state=${timeStamp}` +
-    '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport';
+      'https://plogin.m.jd.com/cgi-bin/mm/new_login_entrance?lang=chs&appid=300' +
+      `&returnurl=https://wq.jd.com/passport/LoginRedirect?state=${timeStamp}` +
+      '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport';
 
   const response = await got(loginUrl, {
     responseType: 'json',
@@ -92,11 +92,11 @@ async function step1() {
       Accept: 'application/json, text/plain, */*',
       'Accept-Language': 'zh-cn',
       Referer:
-        'https://plogin.m.jd.com/login/login?appid=300' +
-        `&returnurl=https://wq.jd.com/passport/LoginRedirect?state=${timeStamp}` +
-        '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
+          'https://plogin.m.jd.com/login/login?appid=300' +
+          `&returnurl=https://wq.jd.com/passport/LoginRedirect?state=${timeStamp}` +
+          '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
       'User-Agent':
-         `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
+          `Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5 UCBrowser/13.4.2.1122`,
       Host: 'plogin.m.jd.com',
     },
   });
@@ -117,16 +117,16 @@ async function step2(cookiesObj) {
   }
   const timeStamp = new Date().getTime();
   const getQRUrl =
-    'https://plogin.m.jd.com/cgi-bin/m/tmauthreflogurl?s_token=' +
-    `${s_token}&v=${timeStamp}&remember=true`;
+      'https://plogin.m.jd.com/cgi-bin/m/tmauthreflogurl?s_token=' +
+      `${s_token}&v=${timeStamp}&remember=true`;
   const response = await got.post(getQRUrl, {
     responseType: 'json',
     json: {
       lang: 'chs',
       appid: 300,
       returnurl:
-        `https://wqlogin2.jd.com/passport/LoginRedirect?state=${timeStamp}` +
-        '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action',
+          `https://wqlogin2.jd.com/passport/LoginRedirect?state=${timeStamp}` +
+          '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action',
       source: 'wq_passport',
     },
     headers: {
@@ -135,11 +135,11 @@ async function step2(cookiesObj) {
       Accept: 'application/json, text/plain, */*',
       Cookie: cookies,
       Referer:
-        'https://plogin.m.jd.com/login/login?appid=300' +
-        `&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=${timeStamp}` +
-        '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
+          'https://plogin.m.jd.com/login/login?appid=300' +
+          `&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=${timeStamp}` +
+          '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
       'User-Agent':
-         `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
+          `Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5 UCBrowser/13.4.2.1122`,
       Host: 'plogin.m.jd.com',
     },
   });
@@ -159,28 +159,28 @@ async function checkLogin(user) {
   const { s_token, guid, lsid, lstoken, cookies, okl_token, token } = user;
   const timeStamp = new Date().getTime();
   const getUserCookieUrl =
-    `https://plogin.m.jd.com/cgi-bin/m/tmauthchecktoken?&token=${token}` +
-    `&ou_state=0&okl_token=${okl_token}`;
+      `https://plogin.m.jd.com/cgi-bin/m/tmauthchecktoken?&token=${token}` +
+      `&ou_state=0&okl_token=${okl_token}`;
   const response = await got.post(getUserCookieUrl, {
     responseType: 'json',
     form: {
       lang: 'chs',
       appid: 300,
       returnurl:
-        'https://wqlogin2.jd.com/passport/LoginRedirect?state=1100399130787&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action',
+          'https://wqlogin2.jd.com/passport/LoginRedirect?state=1100399130787&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action',
       source: 'wq_passport',
     },
     headers: {
       Referer:
-        'https://plogin.m.jd.com/login/login?appid=300' +
-        `&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=${timeStamp}` +
-        '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
+          'https://plogin.m.jd.com/login/login?appid=300' +
+          `&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=${timeStamp}` +
+          '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
       Cookie: cookies,
       Connection: 'Keep-Alive',
       'Content-Type': 'application/x-www-form-urlencoded; Charset=UTF-8',
       Accept: 'application/json, text/plain, */*',
       'User-Agent':
-       `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
+          `Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5 UCBrowser/13.4.2.1122`,
     },
   });
   return response;
@@ -196,16 +196,16 @@ async function sendMsg(updateMsg, cookie, userMsg) {
   if (QYWX_KEY) {
     try {
       await got.post(
-        `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${QYWX_KEY}`,
-        {
-          responseType: 'json',
-          json: {
-            msgtype: 'text',
-            text: {
-              content: `====获取到cookie====\n${updateMsg}\n用户备注：${userMsg}\n${cookie}`,
+          `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${QYWX_KEY}`,
+          {
+            responseType: 'json',
+            json: {
+              msgtype: 'text',
+              text: {
+                content: `====获取到cookie====\n${updateMsg}\n用户备注：${userMsg}\n${cookie}`,
+              },
             },
-          },
-        }
+          }
       );
     } catch (err) {
       console.log({

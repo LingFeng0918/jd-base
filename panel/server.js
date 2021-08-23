@@ -1,4 +1,3 @@
-
 /*
  * @Author: Jerrykuku https://github.com/jerrykuku
  * @Date: 2021-1-8
@@ -91,7 +90,7 @@ async function step1() {
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'zh-cn',
                 'Referer': 'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wq.jd.com/passport/LoginRedirect?state=' + timeStamp + '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
-                'User-Agent': `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
+                'User-Agent': `Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5 UCBrowser/13.4.2.1122`,
                 'Host': 'plogin.m.jd.com'
             }
         });
@@ -124,7 +123,7 @@ async function step2() {
                 'Accept': 'application/json, text/plain, */*',
                 'Cookie': cookies,
                 'Referer': 'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=' + timeStamp + '&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport',
-                'User-Agent': `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
+                'User-Agent': `Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5 UCBrowser/13.4.2.1122`,
                 'Host': 'plogin.m.jd.com',
             }
         });
@@ -162,7 +161,7 @@ async function checkLogin() {
                 'Connection': 'Keep-Alive',
                 'Content-Type': 'application/x-www-form-urlencoded; Charset=UTF-8',
                 'Accept': 'application/json, text/plain, */*',
-                'User-Agent': `Mozilla/5.0 (Linux; Android 8.0.0; BKL-AL00 Build/HUAWEIBKL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.19 SP-engine/2.15.0 baiduboxapp/11.19.5.10 (Baidu; P1 8.0.0)`,
+                'User-Agent': `Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5 UCBrowser/13.4.2.1122`,
             }
         });
 
@@ -314,18 +313,18 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ttyd proxy
-app.use('/shell', createProxyMiddleware({ 
-    target: 'http://localhost:7681', 
-    ws: true, 
-    changeOrigin: true, 
+app.use('/shell', createProxyMiddleware({
+    target: 'http://localhost:7681',
+    ws: true,
+    changeOrigin: true,
     pathRewrite: {
-        '^/shell': '/', 
+        '^/shell': '/',
     },
     onProxyReq(proxyReq, req, res) {
-            if (!req.session.loggedin) {
-              res.redirect('/');
-            }
-        },	
+        if (!req.session.loggedin) {
+            res.redirect('/');
+        }
+    },
 }));
 
 /**
@@ -353,7 +352,7 @@ app.get('/changepwd', function (request, response) {
 /**
  * terminal
  */
- app.get('/terminal', function (request, response) {
+app.get('/terminal', function (request, response) {
     if (request.session.loggedin) {
         response.sendFile(path.join(__dirname + '/public/terminal.html'));
     } else {
@@ -757,7 +756,7 @@ app.get('/api/scripts', function (request, response) {
                 if (excludeRegExp.test(fileList[i])) {
                     continue;
                 }
-                
+
                 var dirMap = {
                     dirName: fileList[i],
                     files: fileListTmp
@@ -767,7 +766,7 @@ app.get('/api/scripts', function (request, response) {
                 if (excludeRegExp.test(fileList[i])) {
                     continue;
                 }
-                
+
                 rootFiles.push(fileList[i]);
             }
         }
@@ -839,17 +838,17 @@ app.post('/updateCookie', function (request, response) {
                     );
                     lines[i] = newLine;
                     updateFlag = true;
-	                var lineNext = lines[i+1];
-	                if (
-	                    lineNext.match(/上次更新：/)
-		                ) {
-		                    const bz = lineNext.split('备注：')[1];
-		                	const newLine = ['## ', pt_pin, ' 上次更新：', new Date().toLocaleDateString(), ' 备注：', bz ? bz : userMsg].join('');
-                    		lines[i+1] = newLine;
-	                	} else {
-		                	const newLine = ['## ', pt_pin, ' 上次更新：', new Date().toLocaleDateString(), ' 备注：', userMsg].join('');
-			            	lines.splice(lastIndex + 1, 0, newLine);
-			        }
+                    var lineNext = lines[i+1];
+                    if (
+                        lineNext.match(/上次更新：/)
+                    ) {
+                        const bz = lineNext.split('备注：')[1];
+                        const newLine = ['## ', pt_pin, ' 上次更新：', new Date().toLocaleDateString(), ' 备注：', bz ? bz : userMsg].join('');
+                        lines[i+1] = newLine;
+                    } else {
+                        const newLine = ['## ', pt_pin, ' 上次更新：', new Date().toLocaleDateString(), ' 备注：', userMsg].join('');
+                        lines.splice(lastIndex + 1, 0, newLine);
+                    }
                 }
             }
         }
@@ -875,7 +874,7 @@ app.post('/updateCookie', function (request, response) {
             err: 0,
             msg: updateFlag ?
                 `[更新成功]\n当前用户量:(${maxCookieCount})` : CK_AUTO_ADD === 'true' ? `[新的Cookie]\n当前用户量:(${CookieCount})` : `服务器配置不自动添加Cookie\n如需启用请添加export CK_AUTO_ADD="true"`,
-                //`[更新成功]\n本服用户量:(${maxCookieCount})` : `非本服用户\n本服用户量:(${CookieCount})`,
+            //`[更新成功]\n本服用户量:(${maxCookieCount})` : `非本服用户\n本服用户量:(${CookieCount})`,
         });
     } else {
         response.send({
