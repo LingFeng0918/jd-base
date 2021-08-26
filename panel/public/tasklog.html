@@ -4,65 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>在线编辑工具</title>
-
+    <title>日志查询 · JS-TOOL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/metismenu/dist/metisMenu.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/elektron/dist/elektron.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/onoffcanvas/dist/onoffcanvas.min.css">
+    <script type="text/javascript" src="./js/prefixfree.min.js"></script>
+
+    <link rel="stylesheet" href="./css/normalize.min.css">
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" type="text/css" href="./css/codemirror.min.css">
     <link rel="stylesheet" type="text/css" href="./css/twilight.css">
     <link rel="stylesheet" type="text/css" href="./css/dracula.css">
     <link rel="stylesheet" type="text/css" href="./css/main.css">
+    <link rel="icon" type="image/x-icon" href="https://github.com/favicon.ico" />
 </head>
 
 <body>
-<div class="container">
-    <div class="elk-app">
-        <div class="elk-wrap diffs">
-            <div class="elk-header">
-                <nav>
-                    <ul>
-                        <li><a href="./home">配置设定</a></li>
-                        <li><a href="./crontab">定时设定</a></li>
-                        <li><a href="./diff">对比工具</a></li>
-                        <li><a href="./diy">自定义脚本</a></li>
-                        <li><a href="./run">手动执行</a></li>
-                        <li><a href="./terminal">终端</a></li>
-                        <li class="active"><a href="./log">日志查询</a></li>
-                        <li><a href="./viewScripts">查看脚本</a></li>
-                        <li><a href="./changepwd">修改密码</a></li>
-                        <li><a href="./logout">退出</a></li>
-                    </ul>
-                </nav>
-                <header>
-                    <a id="toggleIcon" class="onoffcanvas-toggler is-animated" href="#elk-side" data-toggle="onoffcanvas"></a>
-                    <h1>日志查询</h1>
-                    <button id="wrap" title="切换换行">切换换行</button>
-                </header>
-            </div>
+    <div class="container">
+        <div class="elk-app">
+            <div class="elk-wrap diffs">
+                <div class="elk-header">
+                    <nav>
+                        <ul>
+                            <li><a href="./usrconfig">用户设定</a></li>
+                            <li><a href="./home">配置设定</a></li>
+                            <li><a href="./crontab">定时设定</a></li>
+                            <li><a href="./diff">更新工具</a></li>
+                            <li><a href="./diy">自定义脚本</a></li>
+                            <li><a href="./run">手动执行</a></li>
+                            <li class="active"><a href="./terminal">终端</a></li>
+                            <li><a href="./BeanChange.html">变化曲线</a></li>
+                            <li><a href="./log">日志查询</a></li>
+                            <li><a href="./viewScripts">查看脚本</a></li>
+                            <li><a href="./changepwd">修改密码</a></li>
+                            <li><a href="./logout">退出</a></li>
+                        </ul>
+                    </nav>
+                    <header>
+                        <a id="toggleIcon" class="onoffcanvas-toggler is-animated" href="#elk-side"
+                            data-toggle="onoffcanvas"></a>
+                        <h1>日志查询</h1>
+                        <button id="wrap" title="切换换行">切换换行</button>
+                    </header>
+                </div>
 
-            <div class="elk-container">
-                <aside class="elk-side bg-light left-list" id="elk-side">
-                    <div class="elk-side-content ">
-                        <div class="elk-side-nav">
-                            <ul class="nav flex-column" id="menu1">
+                <div class="elk-container">
+                    <aside class="elk-side bg-light left-list" id="elk-side">
+                        <div class="elk-side-content ">
+                            <div class="elk-side-nav">
+                                <ul class="nav flex-column" id="menu1">
 
-                            </ul>
+                                </ul>
 
+                            </div>
                         </div>
-                    </div>
 
-                </aside>
-                <div class="elk-main">
-                    <div class="wrapper">
-                        <textarea id="code" name="code">  你还没有选择日志文件！</textarea>
+                    </aside>
+                    <div class="elk-main">
+                        <div class="wrapper">
+                            <textarea id="code" name="code">  你还没有选择日志文件！</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="./js/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs"></script>
@@ -71,7 +78,9 @@
     <script src="https://cdn.jsdelivr.net/npm/metismenu"></script>
     <script src="./js/codemirror.min.js"></script>
     <script>
-        $.ajaxSetup({ cache: false });
+        $.ajaxSetup({
+            cache: false
+        });
 
         var qrcode, userCookie;
         $(document).ready(function () {
@@ -84,7 +93,7 @@
                 mode: 'shell',
                 theme: 'dracula'
             });
-            
+
             $.get('./api/logs', function (data) {
                 var dirs = data.dirs;
                 var navHtml = "";
@@ -95,9 +104,10 @@
                         var row = `<li class="nav-item">`;
                         for (let filesKey in dirs[index].files) {
                             var fileName = dirs[index].files[filesKey];
-                            row += `<a class="nav-link" href="javascript:logDetail('${dirName}', '${fileName}');">${fileName}</a>`
+                            row +=
+                                `<a class="nav-link" href="javascript:logDetail('${dirName}', '${fileName}');">${fileName}</a>`
                         }
-                            row += `</li>`;
+                        row += `</li>`;
                     } else {
                         var row = `<li class="nav-item">
                                 <a class="nav-link text-dark has-arrow" href="#">${dirName}</a>
@@ -105,13 +115,14 @@
                                     <li class="nav-item">`;
                         for (let filesKey in dirs[index].files) {
                             var fileName = dirs[index].files[filesKey];
-                            row += `<a class="nav-link" href="javascript:logDetail('${dirName}', '${fileName}');">${fileName}</a>`
+                            row +=
+                                `<a class="nav-link" href="javascript:logDetail('${dirName}', '${fileName}');">${fileName}</a>`
                         }
-                            row += `</li>
+                        row += `</li>
                                     </ul>
                                 </li>`;
-                        }
-                    
+                    }
+
                     navHtml += row;
                 }
                 $('#menu1').html(navHtml);
@@ -135,18 +146,18 @@
 
 
             //自动触发事件
-            function dispatch(ele, type){
-                try{
-                    if(ele.dispatchEvent){  //标准浏览器
+            function dispatch(ele, type) {
+                try {
+                    if (ele.dispatchEvent) { //标准浏览器
 
                         var evt = document.createEvent('Event');
-                            evt.initEvent(type,true,true);
-                            ele.dispatchEvent(evt);
-                    }else{
+                        evt.initEvent(type, true, true);
+                        ele.dispatchEvent(evt);
+                    } else {
                         ele.fireEvent('on' + type);
                     }
-                }catch(e){};
-                    
+                } catch (e) {};
+
             }
         });
     </script>

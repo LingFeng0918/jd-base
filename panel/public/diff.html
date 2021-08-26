@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>在线对比合并工具</title>
+    <title>在线更新工具 · JS-TOOL</title>
     <script type="text/javascript" src="./js/jquery.min.js"></script>
     <script type="text/javascript" src="./js/codemirror.min.js"></script>
     <script type="text/javascript" src="./js/shell.js"></script>
@@ -24,16 +24,18 @@
         <div class="diffs">
             <nav>
                 <ul>
+                    <li><a href="./usrconfig">用户设定</a></li>
                     <li><a href="./home">配置设定</a></li>
-                    <li><a href="./crontab" >定时设定</a></li>
-                    <li class="active"><a href="./diff">对比工具</a></li>
+                    <li><a href="./crontab">定时设定</a></li>
+                    <li><a href="./diff">更新工具</a></li>
                     <li><a href="./diy">自定义脚本</a></li>
                     <li><a href="./run">手动执行</a></li>
-                    <li><a href="./terminal">终端</a></li>
+                    <li class="active"><a href="./terminal">终端</a></li>
+                    <li><a href="./BeanChange.html">变化曲线</a></li>
                     <li><a href="./log">日志查询</a></li>
                     <li><a href="./viewScripts">查看脚本</a></li>
-                    <li><a href="./changepwd" >修改密码</a></li>
-                    <li><a href="./logout" >退出</a></li>
+                    <li><a href="./changepwd">修改密码</a></li>
+                    <li><a href="./logout">退出</a></li>
                 </ul>
             </nav>
             <header>
@@ -43,7 +45,7 @@
                 <button id="wrap" title="切换换行">切换换行</button>
                 <button id="save" title="保存">保存 config.sh</button>
             </header>
-            <h4>左侧为 config.sh ，右侧为 config.sample.sh</h4>
+            <h4>左侧为 config.sh ，右侧为 config.sh.sample</h4>
             <div class="compare-wrapper">
                 <div id="compare">
                 </div>
@@ -52,7 +54,7 @@
                 <p>查看源文件，注意将浏览器编码切换为 UTF-8 。</p>
                 <ul>
                     <li><a id="file1" target="_blank" href="./api/config/config">查看 config.sh</a></li>
-                    <li><a id="file2" target="_blank" href="./api/config/sample">查看 config.sample.sh</a></li>
+                    <li><a id="file2" target="_blank" href="./api/config/sample">查看 config.sh.sample</a></li>
                 </ul>
             </div>
         </div>

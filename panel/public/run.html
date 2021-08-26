@@ -4,15 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>手动执行脚本</title>
+    <title>手动执行脚本 · JS-TOOL</title>
     <script type="text/javascript" src="./js/jquery.min.js"></script>
     <script type="text/javascript" src="./js/codemirror.min.js"></script>
     <script type="text/javascript" src="./js/shell.js"></script>
     <script type="text/javascript" src="./js/sweetalert2.js"></script>
+    <script type="text/javascript" src="./js/prefixfree.min.js"></script>
+
+    <link rel="stylesheet" href="./css/normalize.min.css">
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" type="text/css" href="./css/codemirror.min.css">
     <link rel="stylesheet" type="text/css" href="./css/twilight.css">
     <link rel="stylesheet" type="text/css" href="./css/dracula.css">
     <link rel="stylesheet" type="text/css" href="./css/main.css">
+    <link rel="icon" type="image/x-icon" href="https://github.com/favicon.ico" />
 </head>
 
 <body>
@@ -20,12 +25,14 @@
         <div class="diffs">
             <nav>
                 <ul>
+                    <li><a href="./usrconfig">用户设定</a></li>
                     <li><a href="./home">配置设定</a></li>
                     <li><a href="./crontab">定时设定</a></li>
-                    <li><a href="./diff">对比工具</a></li>
+                    <li><a href="./diff">更新工具</a></li>
                     <li><a href="./diy">自定义脚本</a></li>
-                    <li class="active"><a href="./run">手动执行</a></li>
-                    <li><a href="./terminal">终端</a></li>
+                    <li><a href="./run">手动执行</a></li>
+                    <li class="active"><a href="./terminal">终端</a></li>
+                    <li><a href="./BeanChange.html">变化曲线</a></li>
                     <li><a href="./log">日志查询</a></li>
                     <li><a href="./viewScripts">查看脚本</a></li>
                     <li><a href="./changepwd">修改密码</a></li>
@@ -33,38 +40,39 @@
                 </ul>
             </nav>
             <header>
-                <h1>手动执行脚本</h1>
-                <button id="wrap" title="切换换行">切换换行</button>
-                <button id="move-bottom" title="跳转底部">跳转底部</button>
-                <br/>
-                <button id="jd_list" class="cmd-btn" title="列出脚本">列出脚本</button>
-                <button id="jup" title="更新脚本文件">更新脚本文件</button>
-                <button id="rm_log" class="cmd-btn" title="删除旧日志">删除旧日志</button>
-                <button id="jd_get_share_code" class="cmd-btn" title="获取互助码">获取互助码</button>
-                <button id="jcode" title="导出互助码">导出互助码</button>
-                <button id="ps" title="查看进程">查看进程</button>
-                <button id="jd-crazy-joy-coin" title="查看挂机日志">查看挂机日志</button>
-                <button id="hangup" title="重启挂机程序">重启挂机程序</button>
-                <button id="resetpwd" title="重置用户名密码">重置用户名密码</button>
-                <br/>
+                <h1>脚本执行工具</h1>
+                <div style="margin-left: 0.5em;">
+                    <button id="jd_list" class="cmd-btn" title="列出活动脚本">列出活动脚本</button>
+                    <button id="update" title="更新脚本文件">更新脚本文件</button>
+                    <button id="helpcode" title="格式化所有互助码">自动配置互助码</button>
+                    <button id="jd_clean" title="删除日志">删除日志</button>
+                    <button id="runall" title="运行所有脚本">较快运行所有脚本</button>
+                    <br />
+                </div>
                 <form class="run-cmd-form" action="runCmd" method="POST">
-                    <div class="cmd-section">
-                        jtask <input id="jdScript" name="jdScript" type="text" placeholder="请输入脚本名称或脚本绝对路径" required> now
+                    <div class="cmd-section" style="margin-left: 0.5em;">
+                        <input id="jdScript" name="jdScript" type="text" placeholder="脚本名称（jd_xxx）" required>
                     </div>
-                    <input type="submit" id="runCmd">
+                    <input style="width: 60px;height: 30px" type="submit" id="runCmd" class="ant-btn ant-btn-primary" value="执行">
+                    &#12288;<p>
+                        <font color="#000000" size="2">温馨提示：只能手动执行的活动名，执行其他请进入终端操作。若执行活动脚本期间卡住或想停止运行，刷新页面即可。</font>
+                    </p>
                 </form>
+                <br />
             </header>
-            <h4>运行日志</h4>
+            &nbsp;
             <div class="wrapper">
                 <textarea id="code" name="code" readonly="readonly"></textarea>
             </div>
         </div>
     </div>
     <script>
-        $.ajaxSetup({ cache: false });
+        $.ajaxSetup({
+            cache: false
+        });
 
         $(document).ready(function () {
-            var timer=0;
+            var timer = 0;
             var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                 lineNumbers: true,
                 lineWrapping: false,
@@ -75,41 +83,21 @@
                 theme: 'dracula'
             });
 
-            $('.cmd-btn').click(function() {
-                let confirmTxt, cmd;
-                switch (this.id) {
-                    case 'rm_log':
-                        confirmTxt = '确认删除旧日志？';
-                        cmd = 'bash jlog.sh 2>&1 | tee log/jlog.log';
-                        break;
-                    case 'jd_list':
-                        // confirmTxt = '';
-                        cmd = 'bash jtask.sh';
-                        break;
-                    case 'jd_get_share_code':
-                        confirmTxt = '确认获取互助码？';
-                        cmd = `bash jtask.sh ${this.id} now`;
-                        break;
-                    default:
-                        break;
-                }
-
-                if (confirmTxt && !confirm(confirmTxt)) {
-                    return;
-                }
-
+            $('.cmd-btn').click(function () {
                 if (timer) {
                     Swal.fire({
-                        text: '请等待上一条任务执行完毕。',
+                        text: '请等待上一条任务执行完毕！',
                         icon: 'error'
                     });
                     return;
                 }
-
                 editor.setValue('');
 
                 const jsName = this.id === 'jd_list' ? '' : this.id;
-                $.post('./runCmd', { cmd }, function (data) {
+                const cmd = jsName ? `jd ${jsName} now` : 'jd';
+                $.post('./runCmd', {
+                    cmd: cmd
+                }, function (data) {
                     editor.setValue(data.msg);
 
                     if (jsName) {
@@ -128,66 +116,62 @@
                 }, 1000);
             });
 
-            $('#hangup, #resetpwd, #jcode, #jup, #ps, #jd-crazy-joy-coin').click(function() {
-                let confirmTxt, cmd;
-                switch (this.id) {
-                    case 'jup':
-                        confirmTxt = '确认更新脚本文件？';
-                        cmd = 'bash jup.sh 2>&1 | tee -a log/jup.log';
-                        break;
-                    case 'jcode':
-                        confirmTxt = '确认导出互助码？';
-                        cmd = `bash ${this.id}.sh`;
-                        break;
-                    case 'ps':
-                        // confirmTxt = '确认查看进程？';
-                        cmd = `${this.id}`;
-                        break;
-                    case 'jd-crazy-joy-coin':
-                        // confirmTxt = '确认查看挂机日志？';
-                        cmd = `cat /root/.pm2/logs/${this.id}-out.log 2>&1`;
-                        break;
-                    case 'hangup':
-                        confirmTxt = '确认重启挂机程序？';
-                        cmd = `bash jtask.sh ${this.id}`;
-                        break;
-                    case 'resetpwd':
-                        confirmTxt = '重置用户名密码？';
-                        cmd = `bash jtask.sh ${this.id}`;
-                        break;
-                    default:
-                        break;
-                }
 
-                if (confirmTxt && !confirm(confirmTxt)) {
-                    return;
-                }
+            $('#update, #helpcode, #jd_clean, #runall')
+                .click(function () {
+                    let confirmTxt, cmd;
+                    switch (this.id) {
+                        case 'update':
+                            confirmTxt = '确认更新项目文件与活动脚本？';
+                            cmd = `jd ${this.id}`;
+                            break;
+                        case 'helpcode':
+                            confirmTxt = '更新并输出互助码？';
+                            cmd = `jd myhelp`;
+                            break;
+                        case 'jd_clean':
+                            confirmTxt = '确认删除日志？';
+                            cmd = `jd clean`;
+                            break;
+                        case 'runall':
+                            confirmTxt = '确认执行？';
+                            cmd = `jd ${this.id}`;
+                            break;
+                        default:
+                            break;
+                    }
 
-                if (timer) {
-                    Swal.fire({
-                        text: '请等待上一条任务执行完毕。',
-                        icon: 'error'
+                    if (!confirm(confirmTxt)) {
+                        return;
+                    }
+
+                    if (timer) {
+                        Swal.fire({
+                            text: '请等待上一条任务执行完毕！',
+                            icon: 'error'
+                        });
+                        return;
+                    }
+                    editor.setValue('');
+
+                    $.post('./runCmd', {
+                        cmd
+                    }, function (data) {
+                        editor.setValue(data.msg);
+
+                        clearInterval(timer);
+                        timer = 0;
                     });
-                    return;
-                }
-                editor.setValue('');
 
-                $.post('./runCmd', { cmd }, function (data) {
-                    editor.setValue(data.msg);
-
-                    clearInterval(timer);
-                    timer = 0;
+                    timer = 1;
                 });
 
-                timer = 1;
-            });
 
-
-            $('#runCmd').click(function() {
+            $('#runCmd').click(function () {
                 const jdScript = $('#jdScript').val();
                 if (!jdScript) {
                     Swal.fire({
-                        text: '请先补充命令。',
+                        text: '请先补充命令！',
                         icon: 'error'
                     });
                     return;
@@ -195,15 +179,19 @@
 
                 if (timer) {
                     Swal.fire({
-                        text: '请等待上一条任务执行完毕。',
+                        text: '请等待上一条任务执行完毕！',
                         icon: 'error'
                     });
                     return;
                 }
                 editor.setValue('');
 
-                const cmd = `bash jtask.sh ${jdScript} now`;
-                $.post('./runCmd', {cmd: cmd, delay: 1000}, function (data) {
+                const jsName = this.id === 'jd_list' ? '' : this.id;
+                const cmd = `jd ${jdScript} now`;
+                $.post('./runCmd', {
+                    cmd: cmd,
+                    delay: 500
+                }, function (data) {
                     editor.setValue(data.msg);
 
                     //将光标和滚动条设置到文本区最下方
@@ -247,14 +235,13 @@
                 var lineWrapping = editor.getOption('lineWrapping');
                 editor.setOption('lineWrapping', !lineWrapping);
             });
-            
+
             $('#move-bottom').click(function () {
                 editor.execCommand('goDocEnd');
             })
 
             $('#jd_list').trigger('click');
         });
-
     </script>
 
 </body>
