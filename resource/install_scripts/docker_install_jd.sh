@@ -4,7 +4,7 @@
 #
 clear
 
-DockerImage="lantianxiang1/js_tool:A1"
+DockerImage="lingfeng0918/jd:A1"
 ShellName=$0
 ShellDir=$(cd "$(dirname "$0")";pwd)
 ContainerName=""

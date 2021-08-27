@@ -97,7 +97,7 @@ Welcome() {
 INSTALLATION_CLONE() {
   echo -e "\n1. 获取源码"
   [ -d $JdDir ] && mv $JdDir $JdDir.bak && echo "检测到已有 $JdDir 目录，已备份为 $JdDir.bak"
-  git clone -b A1 https://gitee.com/highdimen/js_tool.git $JdDir
+  git clone -b A1 https://gitee.com/lingfeng168/jd-base.git $JdDir
 
   echo -e "\n2. 配置文件"
   crontab -l >$JdDir/old_crontab

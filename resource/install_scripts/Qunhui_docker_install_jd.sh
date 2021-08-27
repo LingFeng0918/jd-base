@@ -4,7 +4,7 @@
 #
 clear
 
-DockerImage="lantianxiang1/js_tool:A1"
+DockerImage="lingfeng0918/jd:A1"
 ShellName=$0
 ShellDir=$(cd "$(dirname "$0")";pwd)
 ContainerName=""
@@ -52,12 +52,12 @@ if [ $NewImage = true ]; then
     if [ $HasImage = true ]; then
         docker stop jd
         docker rm jd
-        docker rmi $(docker images lantianxiang1/js_tool -q)
+        docker rmi $(docker images lingfeng0918/jd:A1 -q)
     fi
     if [ $GetImageType = "Local" ]; then
         rm -rf $WorkDir
         mkdir -p $WorkDir
-        wget -q https://gitee.com/highdimen/js_tool/raw/A1/docker/docker/Dockerfile -O $WorkDir/Dockerfile
+        wget -q https://gitee.com/lingfeng168/jd-base/raw/A1/docker/docker/Dockerfile -O $WorkDir/Dockerfile
         sed -i 's,github.com,github.com.cnpmjs.org,g' $WorkDir/Dockerfile
         sed -i 's,npm install,npm install --registry=https://registry.npm.taobao.org,g' $WorkDir/Dockerfile
         docker build -t $DockerImage $WorkDir > $ShellDir/build_jd_image.log
