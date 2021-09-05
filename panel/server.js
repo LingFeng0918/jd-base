@@ -353,7 +353,9 @@ app.get('/cookie', function (request, response) {
     if (request.session.loggedin && cookies != "") {
         (async () => {
             try {
+                console.log(response);
                 const cookie = await checkLogin();
+                console.log(response);
                 if (cookie.body.errcode == 0) {
                     let ucookie = getCookie(cookie);
                     response.send({ err: 0, cookie: ucookie });
