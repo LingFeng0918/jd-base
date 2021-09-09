@@ -64,7 +64,7 @@
             var confContent = editor.getValue();
             $.post('./api/save', {
                 content: confContent,
-                name: "config.sh"
+                name: "account.json"
             }, function (data) {
                 let icon = (data.err == 0) ? "success" : "error"
                 Swal.fire({
