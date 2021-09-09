@@ -31,6 +31,8 @@ var crontabFile = path.join(rootPath, 'config/crontab.list');
 var confBakDir = path.join(rootPath, 'config/bak/');
 // auth.json 文件目录
 var authConfigFile = path.join(rootPath, 'config/auth.json');
+// account.json 文件目录
+var accountConfigFile = path.join(rootPath, 'config/account.json');
 // 限制文件
 var autoConfigFile = path.join(rootPath, '.AutoConfig/config.sh');
 // Share Code 文件目录
@@ -377,6 +379,10 @@ function bakConfFile(file) {
             oldConfContent = getFileContentByName(diyFile);
             fs.writeFileSync(bakConfFile, oldConfContent);
             break;
+        case "account.json":
+            oldConfContent = getFileContentByName(accountConfigFile);
+            fs.writeFileSync(bakConfFile, oldConfContent);
+            break;
         default:
             break;
     }
@@ -402,6 +408,9 @@ function saveNewConf(file, content) {
             break;
         case "diy.sh":
             fs.writeFileSync(diyFile, content);
+            break;
+        case "account.json":
+            fs.writeFileSync(accountConfigFile, content);
             break;
         default:
             break;
@@ -624,6 +633,9 @@ app.get('/api/config/:key', function (request, response) {
                 case 'diy':
                     content = getFileContentByName(diyFile);
                     break;
+                case 'accounts':
+                    content = getFileContentByName(accountConfigFile);
+                    break;
                 default:
                     break;
             }
@@ -660,7 +672,17 @@ app.get('/usrconfig', function (request, response) {
     }
 
 });
+/**
+ * wskey配置页面
+ */
+app.get('/accounts', function (request, response) {
+    if (request.session.loggedin) {
+        response.sendFile(path.join(__dirname + '/public/accounts.html'));
+    } else {
+        response.redirect('/login');
+    }
 
+});
 /**
  * 对比 配置页面
  */

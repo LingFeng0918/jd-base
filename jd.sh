@@ -57,8 +57,8 @@ file_env_sys=$dir_config/Env.js
 file_env_sys_sample=$dir_sample/Env.js
 file_auth_sample=$dir_sample/auth.json.sample
 file_auth_user=$dir_config/auth.json
-FileAccountConf=$ConfigDir/account.json
-FileAccountConfSample=$SampleDir/account.json
+FileAccountConf=$dir_config/account.json
+FileAccountConfSample=$dir_sample/account.json
 file_diy_shell=$dir_config/diy.sh
 send_mark=$dir_shell/send_mark
 file_key=$dir_config/.key
@@ -352,6 +352,7 @@ fix_files() {
     [ -d $olddir_scripts2 ] && rm -rf $olddir_scripts2
     [ ! -f $file_config_user ] && cp -f $file_config_sample $file_config_user
     [ ! -f $file_cookie ] && cp -f $file_cookie_sample $file_cookie
+    [ ! -f $FileAccountConf ] && cp -f $FileAccountConfSample $FileAccountConf
     [ ! -f $list_crontab_user ] && cp -f $list_crontab_sample $list_crontab_user
     [ ! -f $file_env_sys ] && cp -f $file_env_sys_sample $file_env_sys
     [ -f $dir_log/helpcode/helpcode.log ] && rm -rf $dir_log/helpcode/helpcode.log

@@ -1,0 +1,17 @@
+[
+  {
+    "pt_pin": "ptpin的值",
+    "ws_key": "wskey的值",
+    "remarks": "备注内容"
+  },
+  {
+    "pt_pin": "",
+    "ws_key": "",
+    "remarks": ""
+  },
+  {
+    "pt_pin": "",
+    "ws_key": "",
+    "remarks": ""
+  }
+]
