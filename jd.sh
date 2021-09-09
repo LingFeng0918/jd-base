@@ -28,6 +28,7 @@ fix_dir_shell=$(dirname $dir_shell)
 dir_root=$dir_shell
 dir_rootup=$(dirname $dir_root)
 dir_config=$dir_root/config
+SignDir=$dir_root/sign
 dir_AutoConfig=$dir_root/.AutoConfig
 dir_scripts=$dir_root/scripts
 dir_scripts2=$dir_root/.scripts2
@@ -61,6 +62,7 @@ send_mark=$dir_shell/send_mark
 file_key=$dir_config/.key
 file_key_cry=$dir_config/.keycry
 file_panel_server=$dir_panel/server.js
+FileUpdateCookie=$dir_panel/updateCookies.js
 file_panel_public_terminal=$dir_panel/public/terminal.html
 
 ## 豆子变化记录文件
@@ -797,7 +799,116 @@ function Git_PullScripts2 {
     ExitStatusScripts2=$?
     git reset --hard origin/master >/dev/null 2>&1
 }
+## 同步定时清单
+function Update_Crontab() {
+    if [[ $(cat $list_crontab_user) != $(crontab -l) ]]; then
+        crontab $list_crontab_user
+    fi
+}
+## 账号控制
+function Cookies_Control() {
+    import_config_and_check
+    case $1 in
+    check)
+        count_user_sum
+        # [ -f $send_mark ] && rm -rf $send_mark
+        function Gen_pt_pin_array() {
+            local Tmp1 Tmp2 i pt_pin_temp
+            for ((user_num = 1; user_num <= $user_sum; user_num++)); do
+                Tmp1=Cookie$user_num
+                Tmp2=${!Tmp1}
+                i=$(($user_num - 1))
+                pt_pin_temp=$(echo $Tmp2 | perl -pe "{s|.*pt_pin=([^; ]+)(?=;?).*|\1|}")
+                pt_pin[i]=$pt_pin_temp
+            done
+        }
 
+        function CheckCookie() {
+            local p=$1
+            local ConnectionTest="$(curl -I -s --connect-timeout 5 https://bean.m.jd.com/bean/signIndex.action -w %{http_code} | tail -n1)"
+            local CookieValidityTest="$(curl -s --noproxy "*" "https://bean.m.jd.com/bean/signIndex.action" -H "cookie: $p")"
+            if [ "$ConnectionTest" -eq "302" ]; then
+                if [[ "$CookieValidityTest" ]]; then
+                    echo -e "\033[32m[✔]\033[0m"
+                else
+                    echo -e "\033[31m[X]\033[0m"
+                fi
+            else
+                echo -e "\033[31m[API请求失败]\033[0m"
+            fi
+        }
+
+        function Print_Info() {
+            echo -e "\n检测到本地共有 \033[34m$UserSum\033[0m 个账号，当前状态信息如下（[✔]有效，[X]无效）："
+            for ((m = 0; m < $user_sum; m++)); do
+                local CookieUpdateDate=$(grep "上次更新：" $FileConfUser | grep ${pt_pin[m]} | grep -E "20[0-9][0-9]" | head -1 | awk -F '：' '{print$2}' | awk -F ' ' '{print$1}')
+                if [ -z ${CookieUpdateDate} ]; then
+                    local UpdateTime="更新日期：[\033[34mUnknow\033[0m]"
+                else
+                    local UpdateTime="更新日期：[\033[34m${CookieUpdateDate}\033[0m]"
+                    local Tmp1=$(($(date -d $(date "+%Y-%m-%d") +%s) - $(date -d "${CookieUpdateDate}" +%s)))
+                    local Tmp2=$(($Tmp1 / 86400))
+                    local Tmp3=$((30 - $Tmp2))
+                    [ -z $CheckCookieDaysAgo ] && local Days="2" || local Days=$(($CheckCookieDaysAgo - 1))
+                    if [ $Tmp3 -le $Days ] && [ $Tmp3 -ge 0 ]; then
+                        [ $Tmp3 = 0 ] && local TmpTime="今天" || local TmpTime="$Tmp3天后"
+                        echo -e "账号$((m + 1))：$(printf $(echo ${pt_pin[m]} | perl -pe "s|%|\\\x|g;")) 将在$TmpTime过期"
+                        # echo -e "账号$((m + 1))：$(printf $(echo ${pt_pin[m]} | perl -pe "s|%|\\\x|g;")) 将在$TmpTime过期" >>$FileSendMark
+                    fi
+                fi
+                num=$((m + 1))
+                echo -e "$num：$(printf $(echo ${pt_pin[m]} | perl -pe "s|%|\\\x|g;")) $(CheckCookie $(grep -E "Cookie[1-9]" $FileConfUser | grep ${pt_pin[m]} | awk -F '\"' '{print$2}'))    $UpdateTime"
+            done
+        }
+        Gen_pt_pin_array
+        Print_Info
+        # if [ -f $send_mark ]; then
+        #     echo -e "\n检测到下面的账号将在近期失效，请注意即时更新！"
+        #     cat $send_mark
+        #     sed -i 's/$/&\\n/g' $send_mark
+        #     Notify "账号过期提醒" "$(cat $send_mark)"
+        #     rm -rf $send_mark
+        # fi
+        echo ''
+        ;;
+    update)
+        [ -f $send_mark ] && rm -rf $send_mark
+        ## 执行脚本
+        if [ -f $FileUpdateCookie ]; then
+            local UserNum AccountNum
+            Update_Crontab
+            count_user_sum
+            LogPath="$dir_log/updateCookies"
+            Make_Dir ${LogPath}
+            echo -e "\n$WORKING 正在依次更新中，请耐心等待所有任务执行完毕...\n"
+            for ((UserNum = 1; UserNum <= ${user_sum}; UserNum++)); do
+                for num in ${TempBlockCookie}; do
+                    [[ $UserNum -eq $num ]] && continue 2
+                done
+                AccountNum=Cookie$user_sum
+                grep -q "$(echo ${!AccountNum} | grep -o "pt_pin.*;" | awk -F '\;' '{print$1}' | perl -pe '{s|pt_pin=||g}')" $FileAccountConf
+                if [[ $? -eq 0 ]]; then
+                    export JD_COOKIE=${!AccountNum}
+                else
+                    continue
+                fi
+                LogFile="${LogPath}/$(date "+%Y-%m-%d-%H-%M-%S")_$UserNum.log"
+                cd $PanelDir
+                node updateCookies.js &>${LogFile} &
+                wait
+                grep "Cookie =>" ${LogFile} | tee -a $send_mark
+            done
+            echo -e "\n$COMPLETE 更新完成\n"
+            if [ -f $send_mark ]; then
+                [[ $AccountUpdateNotify == true ]] && Notify "账号更新结果通知" "$(cat $send_mark)"
+                rm -rf $send_mark
+            fi
+        else
+            echo -e "\n$ERROR 账号更新脚本不存在，请确认是否移动！\n"
+        fi
+        ;;
+    esac
+}
 ## 统计 thirdpard 仓库数量
 count_thirdpard_repo_sum() {
     if [[ -z ${ThirdpardRepoUrl1} ]]; then
