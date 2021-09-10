@@ -888,7 +888,7 @@ function Cookies_Control() {
                 for num in ${TempBlockCookie}; do
                     [[ $UserNum -eq $num ]] && continue 2
                 done
-                AccountNum=Cookie$user_sum
+                AccountNum=Cookie$UserNum
                 grep -q "$(echo ${!AccountNum} | grep -o "pt_pin.*;" | awk -F '\;' '{print$1}' | perl -pe '{s|pt_pin=||g}')" $FileAccountConf
                 if [[ $? -eq 0 ]]; then
                     export JD_COOKIE=${!AccountNum}
