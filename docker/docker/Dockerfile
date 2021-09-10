@@ -31,8 +31,6 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && pnpm config set registry http://registry.npm.taobao.org \
     && pnpm install -g pm2 \
     && pnpm install -g ts-node typescript tslib \
-    && cd $JD_DIR/scripts \
-    && npm install \
     && ln -sf $JD_DIR/jd.sh /usr/local/bin/jd \
     && jd update \
     && jd update \

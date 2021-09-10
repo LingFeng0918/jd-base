@@ -47,7 +47,7 @@ var ScriptsPath = path.join(rootPath, 'scripts/');
 var authError = "错误的用户名密码，请重试";
 var loginFaild = "请先登录!";
 
-var configString = "config usrconfig sample crontab shareCode diy";
+var configString = "config usrconfig sample crontab shareCode diy accounts";
 
 var s_token, cookies, guid, lsid, lstoken, okl_token, token, userCookie = "";
 
@@ -631,10 +631,10 @@ app.get('/api/config/:key', function (request, response) {
                     content = getFileContentByName(shareCodeFile);
                     break;
                 case 'diy':
-                    content = getFileContentByName(accountConfigFile);
+                    content = getFileContentByName(diyFile);
                     break;
                 case 'accounts':
-                    content = getFileContentByName(crontabFile);
+                    content = getFileContentByName(accountConfigFile);
                     break;
                 default:
                     break;
