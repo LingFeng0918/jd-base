@@ -879,6 +879,7 @@ function Cookies_Control() {
         ## 执行脚本
         if [ -f $FileUpdateCookie ]; then
             local UserNum AccountNum
+            import_config_and_check
             Update_Crontab
             count_user_sum
             LogPath="$dir_log/updateCookies"
@@ -896,7 +897,7 @@ function Cookies_Control() {
                     continue
                 fi
                 LogFile="${LogPath}/$(date "+%Y-%m-%d-%H-%M-%S")_$UserNum.log"
-                cd $PanelDir
+                cd $dir_panel
                 node updateCookies.js &>${LogFile} &
                 wait
                 grep "Cookie =>" ${LogFile} | tee -a $send_mark
