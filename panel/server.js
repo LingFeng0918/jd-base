@@ -634,7 +634,7 @@ app.get('/api/config/:key', function (request, response) {
                     content = getFileContentByName(diyFile);
                     break;
                 case 'accounts':
-                    content = getFileContentByName(crontabFile);
+                    content = getFileContentByName(accountConfigFile);
                     break;
                 default:
                     break;
