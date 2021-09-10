@@ -631,7 +631,7 @@ app.get('/api/config/:key', function (request, response) {
                     content = getFileContentByName(shareCodeFile);
                     break;
                 case 'diy':
-                    content = getFileContentByName(diyFile);
+                    content = getFileContentByName(accountConfigFile);
                     break;
                 case 'accounts':
                     content = getFileContentByName(crontabFile);
