@@ -882,7 +882,7 @@ function Cookies_Control() {
             Update_Crontab
             count_user_sum
             LogPath="$dir_log/updateCookies"
-            Make_Dir ${LogPath}
+            make_dir ${LogPath}
             echo -e "\n$WORKING 正在依次更新中，请耐心等待所有任务执行完毕...\n"
             for ((UserNum = 1; UserNum <= ${user_sum}; UserNum++)); do
                 for num in ${TempBlockCookie}; do
