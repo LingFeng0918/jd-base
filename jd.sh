@@ -1449,35 +1449,35 @@ combine_all() {
 
     export JD_COOKIE=$(combine_sub Cookie)
     ## 东东农场(jd_fruit.js)
-    export FRUITSHARECODES=$(combine_sub ForOtherFruit)
+    export FRUITSHARECODES=$(combine_sub ForOtherFruit "1b0f3cb476b54ec8b8bd66b129512abc@de88af611604440ab2d8a055feec54ff@d857ad0b7588407bbbf56288881acde9@ffbffeb43f2144e3b1aec62a35ae08cc@0b843019b43e4966b75461c03f44eb49@07ec96ec60a541acafdf092593ea19cc@e5d4eb5371244faca945769bc359ca3c@8cdb78f4f6514bdea7b05910b1616f54@f69e584df3944b0db2faf608dffefeff@f5d2fde2662b4ee9bf5e31cb4af9193a@76ea53cfdad240bf8f9c0546d8d5cbbe")
     ## 东东萌宠(jd_pet.js)
-    export PETSHARECODES=$(combine_sub ForOtherPet)
+    export PETSHARECODES=$(combine_sub ForOtherPet "MTE1NDQ5OTIwMDAwMDAwNDI2MzQ5MDk=@MTE1NDQ5OTIwMDAwMDAwNDM3ODgwODM=@MTE1NDUwMTI0MDAwMDAwMDQzODM4NDYx@MTEzMzI0OTE0NTAwMDAwMDA0NDA4OTIyMw==@MTE1NDAxNzgwMDAwMDAwNDQwODQ3NTU=@MTE1NDUwMTI0MDAwMDAwMDQ0MDg5MjEz@MTE0MzE5NjEzMDAwMDAwMDQ3NTI4MzM3@MTE1NDUyMjEwMDAwMDAwNDM4MzA0NTc=@MTEzMzI0OTE0NTAwMDAwMDA0NjUyNjk1NQ==")
     ## 种豆得豆(jd_plantBean.js)
-    export PLANT_BEAN_SHARECODES=$(combine_sub ForOtherBean)
+    export PLANT_BEAN_SHARECODES=$(combine_sub ForOtherBean "ol55gydvsstx2hkr3hesg6myme3h7wlwy7o5jii@b62d7ft67awrlb7lmoiebogkmm5ac3f4ijdgqji@gpcab26gdmln2sdttihahyksrm5ac3f4ijdgqji@mlrdw3aw26j3wep3hiamrtbhyeys7z47eoiyxry@olmijoxgmjutyhl2hu4xuocdohs5j4tkqubnbwi@mlrdw3aw26j3wjgfoohoiog7ctvnwe4cstjdfoa@2i2vuvkxzo73t5v3l57kenqhei3h7wlwy7o5jii@mlrdw3aw26j3wp6oxm7bdn6xwbthqrrvqou4pqi@dr6hgbtcttwzxnrgus5oicvzjfwiomisumhwgri@u5lnx42k5ifivkzkxzubxyexqnktdmr6dcv7ruq")
     ## 东东工厂(jd_jdfactory.js)
-    export DDFACTORY_SHARECODES=$(combine_sub ForOtherJdFactory)
+    export DDFACTORY_SHARECODES=$(combine_sub ForOtherJdFactory "T018v_VxQxkZ_FXVJBqb1ACjVWnYaS5kRrbA@T016_qE2BEEH8FbWKHWpCjVWnYaS5kRrbA@T0225KkcRR5P9waCJBzzkPRcJwCjVWnYaS5kRrbA@T0225KkcRhYZpl3eJhn0naFYIgCjVWnYaS5kRrbA@T0225KkcRU1N9FGEJEj0nPcNJwCjVWnYaS5kRrbA@T018v_hzSBwQ_FbVJxmb1ACjVWnYaS5kRrbA@T0225KkcRRodpgWEcx2mlfNfIgCjVWnYaS5kRrbA@T022vfxwQx0a9VPePRPxkPENfQCjVWnYaS5kRrbA@T0205KkcJHpKnAKQZVCAxqlSCjVWnYaS5kRrbA")
     ## 京喜工厂(jd_dreamFactory.js)
-    export DREAM_FACTORY_SHARE_CODES=$(combine_sub ForOtherDreamFactory)
+    export DREAM_FACTORY_SHARE_CODES=$(combine_sub ForOtherDreamFactory "r0vlkIcazyr_j4tKliy19A==@wWbZsNfTVt09jdDpZmh3xQ==@hO_klEoUfXSSMcsInD5Mdg==@Jfdz8gudKSreL01NTEu6Sw==@Wtn7e7BPhMjR_NwH8-3oJQ==@rZUIJijkD5aub05jsk-slQ==@2qaF6DTnWvYpnoTOiveSRQ==")
     ## 京东赚赚(jd_jdzz.js)
     export JDZZ_SHARECODES=$(combine_sub ForOtherJdzz)
     ## 疯狂的Joy(jd_crazy_joy.js)
     export JDJOY_SHARECODES=$(combine_sub ForOtherJoy)
     ## 口袋书店(jd_bookshop.js)
-    export BOOKSHOP_SHARECODES=$(combine_sub ForOtherBookShop)
+    export BOOKSHOP_SHARECODES=$(combine_sub ForOtherBookShop "fa78fcdbb17943e599d1abf91357d876@4da8e5c4a9a94abfacfeb6698faa38cd")
     ## 签到领现金(jd_cash.js)
     export JD_CASH_SHARECODES=$(combine_sub ForOtherCash)
     ## 京喜农场(jd_jxnc.js)
     export JXNC_SHARECODES=$(combine_sub ForOtherJxnc)
     ## 闪购盲盒(jd_sgmh.js)
-    export JDSGMH_SHARECODES=$(combine_sub ForOtherSgmh)
+    export JDSGMH_SHARECODES=$(combine_sub ForOtherSgmh "T016_qE2BEEH8FbWKHWpCjVWmIaW5kRrbA@T0167fx2Rh0Q_FzSIBn1CjVWmIaW5kRrbA@T0225KkcRR5P9waCJBzzkPRcJwCjVWmIaW5kRrbA@0225KkcRhYZpl3eJhn0naFYIgCjVWmIaW5kRrbA@T0225KkcRU1N9FGEJEj0nPcNJwCjVWmIaW5kRrbA@T018v_hzSBwQ_FbVJxmb1ACjVWmIaW5kRrbA@T0205KkcHnpkiSKmeGmqzZdMCjVQmoaT5kRrbA@T018v_51SB8f9FzQJxOb1ACjVQmoaT5kRrbA@T0205KkcJHpKnAKQZVCAxqlSCjVQmoaT5kRrbA")
     ## 京喜财富岛(jd_cfd.js)
-    export JDCFD_SHARECODES=$(combine_sub ForOtherCfd)
+    export JDCFD_SHARECODES=$(combine_sub ForOtherCfd "2958A00A747C0FA0E57D547A5506E4948C167C3902F2C804D0E878DF3F86CC49@BABDC3F93EC5D5AF72414039E5DCA6F8C431A57043D21FACC8001C89984F29B2@FA6BEB0ABCE5DAECDD342EAEB3586E5BCBE7A98CC6709CF4057211FDFA610060@BFDC50E3F3B4A34F2E705A758E862C9EB6474DEEC7EC1F1B95192ADAFE7B8DE8@A44D1494A608A04E8508002B55614323468439BBC06307F39AEED4142E348714@44D73C955ED3D4DDABB81F78E4F12A84899B8516EE5643AFD1DA1B3C19777C90@8AC418C3D2FEDE556ACA7B3DEA521CCD7D3DF7DE034EC4E0D7CFFA48D597E424@5426614D6E46D889082C27219B1A0786969D826B8DDDD7192D197C6328FD4CCF@F246F9163ADB8B1063371D294E78DEBBA125DE962A68676FAF6D53F181E3845F@EC5EDEB580A045BFE08257FF4BF3E245ADB3E7737D4BD09722D59C90DB4CA7A0@D581C63D5041BD6E4329DBEEDC60CA153566BC76B004FFBE32E6C61EBBCB1243")
     ## 环球挑战赛(jd_global.js)
     export JDGLOBAL_SHARECODES=$(combine_sub ForOtherGlobal)
     ## 京东手机狂欢城(jd_carnivalcity.js)
     export JD818_SHARECODES=$(combine_sub ForOtherCarnivalcity)
 
-    export JDHEALTH_SHARECODES=$(combine_sub ForOtherHealth)
+    export JDHEALTH_SHARECODES=$(combine_sub ForOtherHealth "T018v_VxQxkZ_FXVJBqb1ACjVfnoaW5kRrbA@T016_qE2BEEH8FbWKHWpCjVfnoaW5kRrbA@T0225KkcRR5P9waCJBzzkPRcJwCjVfnoaW5kRrbA@T018v_hzSBwQ_FbVJxmb1ACjVfnoaW5kRrbA@T0225KkcRhYZpl3eJhn0naFYIgCjVfnoaW5kRrbA@T0205KkcJHpKnAKQZVCAxqlSCjVfnoaW5kRrbA@T011aHX7lrC-vAgCjVfnoaW5kRrbA@T0225KkcRRodpgWEcx2mlfNfIgCjVfnoaW5kRrbA@T022vfxwQx0a9VPePRPxkPENfQCjVfnoaW5kRrbA@T0167fx2Rh0Q_FzSIBn1CjVfnoaW5kRrbA")
 }
 
 ## 并发运行时，直接申明每个账号的Cookie与互助码，$1：用户Cookie编号
@@ -1573,6 +1573,7 @@ usage() {
     echo -e "$cmd_jd clean           # 手动清理日记"
     echo -e "$cmd_jd hangup          # 重启挂机程序"
     echo -e "$cmd_jd update          # 更新最新版本"
+    echo -e "$cmd_jd cookie update   # wskey转cookie并更新"
     echo
     echo -e "\n当前scripts目录下有以下脚本可以运行："
     for ((i = 0; i < ${#array_scripts[*]}; i++)); do
