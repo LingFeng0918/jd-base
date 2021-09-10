@@ -2026,6 +2026,17 @@ case $# in
     test715)
         run_normaltest $1 $2
         ;;
+    update | check)
+        case $1 in
+        cookie)
+            Cookies_Control $2
+            ;;
+        *)
+            echo -e "\n$COMMAND_ERROR"
+            Help
+            ;;
+        esac
+        ;;
     *)
         echo -e "\n命令输入错误...\n"
         usage
