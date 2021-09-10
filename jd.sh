@@ -903,7 +903,7 @@ function Cookies_Control() {
             done
             echo -e "\n$COMPLETE 更新完成\n"
             if [ -f $send_mark ]; then
-                [[ $AccountUpdateNotify == true ]] && Notify "账号更新结果通知" "$(cat $send_mark)"
+                [[ $AccountUpdateNotify == true ]] && notify "账号更新结果通知" "$(cat $send_mark)"
                 rm -rf $send_mark
             fi
         else
