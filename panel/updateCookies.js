@@ -18,7 +18,7 @@ if ($.isNode()) {
 }
 
 let UA = `okhttp/3.12.1;jdmall;android;version/10.1.2;build/89743;screen/1080x2206;os/11;network/wifi;`;
-const configShPath = "../config/config.sh";
+const configShPath = "../config/cookie.sh";
 const accountPath = "../config/account.json";
 const signPath = "./sign/";
 const sleep = (ms) => {
