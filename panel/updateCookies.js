@@ -85,6 +85,7 @@ async function updateCookies(cookie) {
 
 async function getCkByWsKey(account) {
     let sign = await getSign();
+    console.log(`sign\n ${sign}`);
     const {tokenKey} = await genToken(account.ws_key, account.pt_pin, sign);
     return await getJDCookie(account.pt_pin,tokenKey);
 }
