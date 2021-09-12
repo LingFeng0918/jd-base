@@ -20,7 +20,7 @@ if ($.isNode()) {
 let UA = `okhttp/3.12.1;jdmall;android;version/10.1.2;build/89743;screen/1080x2206;os/11;network/wifi;`;
 const configShPath = "../config/config.sh";
 const accountPath = "../config/account.json";
-const signPath = "../sign/";
+const signPath = "./sign/";
 const sleep = (ms) => {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
@@ -106,6 +106,7 @@ function random(min, max) {
 
 function loadLocalSign() {
     let signFile = `${signPath}${random(1, signJsonFileCount)}.json`;
+    console.log(`\n 获取到的sign : ${signFile}\n`);
     try {
         fs.accessSync(signFile)
         signList = JSON.parse(fs.readFileSync(signFile).toString())
