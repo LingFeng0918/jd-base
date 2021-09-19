@@ -9,6 +9,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "got": "^11.8.1",
-    "http-proxy-middleware": "^1.0.6"
+    "http-proxy-middleware": "^1.0.6",
+    "set-cookie-parser": "^2.4.8",
+    "tough-cookie": "^4.0.0"
   }
 }
