@@ -791,7 +791,7 @@ git_pull_scripts() {
 
 ## 克隆scripts2
 function Git_CloneScripts2 {
-    git clone -b A1 https://gitee.com/lingfeng168/jd-base.git ${dir_scripts2} >/dev/null 2>&1
+    git clone -b master https://gitee.com/lingfeng168/jd_scripts.git ${dir_scripts2} >/dev/null 2>&1
     ExitStatusScripts2=$?
 }
 
@@ -1282,7 +1282,7 @@ thirdpard脚本目录：$dir_thirdpard
         fi
     fi
     ## 更新scripts2
-    [ -d ${dir_scripts2}/.git ] && Git_PullScripts2 || Git_CloneScripts2
+    ## [ -d ${dir_scripts2}/.git ] && Git_PullScripts2 || Git_CloneScripts2
 
     ## 更新scripts
     ## 更新前先存储package.json和githubAction.md的内容
