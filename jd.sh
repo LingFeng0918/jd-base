@@ -1370,9 +1370,9 @@ thirdpard脚本目录：$dir_thirdpard
     fi
 
     ##使scripts2生效
-    cp -f ${dir_scripts2}/jd_*.js ${dir_scripts}
-    [ -f ${dir_scripts2}/ZooFaker.js ] && cp -f ${dir_scripts2}/ZooFaker.js ${dir_scripts}
-    cp -f ${dir_scripts2}/sendNotify.js ${dir_scripts}
+#    cp -f ${dir_scripts2}/jd_*.js ${dir_scripts}
+#    [ -f ${dir_scripts2}/ZooFaker.js ] && cp -f ${dir_scripts2}/ZooFaker.js ${dir_scripts}
+#    cp -f ${dir_scripts2}/sendNotify.js ${dir_scripts}
 
     ## 调用用户自定义的diy.sh
     if [[ ${EnableExtraShell} == true ]]; then
