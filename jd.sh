@@ -1563,7 +1563,7 @@ usage() {
     echo
     echo -e "$cmd_jd jd_xxx          # 正常运行jd_xxx脚本"
     echo -e "$cmd_jd jd_xxx now      # 立即运行jd_xxx脚本"
-    echo -e "$cmd_jd jd_xxx fast     # 急速运行jd_xxx脚本"
+    echo -e "$cmd_jd jd_xxx fast     # 急速运行jd_xxx脚本-(并发)"
     echo -e "$cmd_jd jd_xxx 数字     # 第几账号单独运行jd_xxx脚本"
     echo -e "$cmd_jd runall1         # 运行运行所有脚本，耗时1小时"
     echo -e "$cmd_jd runall2         # 较快运行所有脚本，耗时10分钟"
