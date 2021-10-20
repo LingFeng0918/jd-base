@@ -1,6 +1,6 @@
-## Version: v3.41.0
-## Date: 2021-06-13
-## Update Content: 重新加入AutoHelpOther参数，但是部分人启用后并不生效，默认false自行按照自身情况修改为true。（配置文件不会自动智能替换，需要手动进入面板通过对比工具手动替换）
+## Version: v3.54.0
+## Date: 2021-10-20
+## Update Content: 增加城城互助码填写（配置文件不会自动智能替换，需要手动进入面板通过对比工具手动替换）
 
 ## 上面版本号中，如果第2位数字有变化，那么代表增加了新的参数，如果只有第3位数字有变化，仅代表更新了注释，没有增加新的参数，可更新可不更新
 
@@ -82,10 +82,12 @@ RandomDelay="300"
 
 
 ################################## 定义User-Agent（选填） ##################################
-## 自定义lxk0301大佬仓库里JD系列js脚本的User-Agent，不懂不知不会User-Agent的请不要随意填写内容，随意填写了出错概不负责
+## 自定义JD系列js脚本的User-Agent，不懂不知不会User-Agent的请不要随意填写内容，随意填写了出错概不负责
 ## 如需使用，请自行解除下一行注释
 # export JD_USER_AGENT=""
 
+## 如需使用自定义JXUA，请自行解除下一行注释
+# export JX_USER_AGENT=""
 
 ################################## 定义通知TOKEN（选填） ##################################
 ## 想通过什么渠道收取通知，就填入对应渠道的值
@@ -95,7 +97,7 @@ export PUSH_KEY=""
 ## 2. BARK，教程（看BARK_PUSH和BARK_SOUND的说明）：https://gitee.com/lxk0301/jd_docker/blob/master/githubAction.md#%E4%B8%8B%E6%96%B9%E6%8F%90%E4%BE%9B%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84-secrets%E5%85%A8%E9%9B%86%E5%90%88
 export BARK_PUSH=""
 export BARK_SOUND=""
-
+export BARK_GROUP=""
 ## 3. Telegram，如需使用，TG_BOT_TOKEN和TG_USER_ID必须同时赋值，教程：https://gitee.com/lxk0301/jd_docker/blob/master/backUp/TG_PUSH.md
 export TG_BOT_TOKEN=""
 export TG_USER_ID=""
@@ -119,6 +121,30 @@ export QYWX_KEY=""
 ## 依次填上corpid的值,corpsecret的值,touser的值,agentid,media_id的值，注意用,号隔开，例如："wwcff56746d9adwers,B-791548lnzXBE6_BWfxdf3kSTMJr9vFEPKAbh6WERQ,mingcheng,1000001,2COXgjH2UIfERF2zxrtUOKgQ9XklUqMdGSWLBoW_lSDAdafat"
 export QYWX_AM=""
 
+## 9. go-cqhttp通知设置区域
+##gobot_url 填写请求地址http://127.0.0.1/send_private_msg
+##gobot_token 填写在go-cqhttp文件设置的访问密钥
+##gobot_qq 填写推送到个人QQ或者QQ群号
+##go-cqhttp相关API https://docs.go-cqhttp.org/api
+##推送到个人QQ: http://127.0.0.1/send_private_msg  群：http://127.0.0.1/send_group_msg 
+export GOBOT_URL=""
+
+##访问密钥
+export GOBOT_TOKEN=""
+
+##如果GOBOT_URL设置 /send_private_msg 则需要填入 user_id=个人QQ 相反如果是 /send_group_msg 则需要填入 group_id=QQ群
+export GOBOT_QQ=""
+
+
+## 10. QMSG酱通知设置区域
+##此处填你申请的QMSG_KEY.
+export QMSG_KEY=""
+
+##此处填推送方式： send 私聊消息  group 群消息.
+export QMSG_WAY=""
+
+##非必填参数,指定要接收消息的QQ号或者QQ群，多个以英文逗号分割，例如：12345,12346。指定的QQ号或者QQ群必须在你的管理台已添加。如果调用的是私聊消息推送接口，则指定需要接收消息的QQ，如果调用的是群消息推送接口，则指定需要接收消息的QQ群
+export QMSG_QQ=""
 
 ################################## 定义每日签到的通知形式（选填） ##################################
 ## js脚本每日签到提供3种通知方式，分别为：
@@ -137,41 +163,49 @@ export JD_BEAN_STOP=""
 ## 如果启用了TempBlockCookie，那么只是被屏蔽的账号不助力其他账号，其他账号还是会助力被屏蔽的账号
 AutoHelpOther=""
 
-################################## 定义jd_zoo Pk互助（临时） ##################################
+
+################################## 定义jd_moneytree互助（临时） ##################################
 ## 具体填法及要求详见本文件最下方“互助码填法示例”
-MyZooPk1=""
-MyZooPk2=""
-MyZooPk3=""
-MyZooPk4=""
-MyZooPk5=""
-MyZooPk6=""
-MyZooPkA=""
-MyZooPkB=""
+MyTree1=""
+MyTree2=""
+MyTree3=""
+MyTree4=""
+MyTree5=""
+MyTree6=""
+MyTreeA=""
+MyTreeB=""
 
-ForOtherZooPk1=""
-ForOtherZooPk2=""
-ForOtherZooPk3=""
-ForOtherZooPk4=""
-ForOtherZooPk5=""
-ForOtherZooPk6=""
+ForOtherTree1=""
+ForOtherTree2=""
+ForOtherTree3=""
+ForOtherTree4=""
+ForOtherTree5=""
+ForOtherTree6=""
 
-################################## 定义jd_zoo 个人互助（临时） ##################################
+################################## 定义燃夏部分开关 ##################################
+## 是否入会，true 入会，false 不入会，默认false
+
+export summer_movement_joinjoinjoinhui=""
+
+
 ## 具体填法及要求详见本文件最下方“互助码填法示例”
-MyZoo1=""
-MyZoo2=""
-MyZoo3=""
-MyZoo4=""
-MyZoo5=""
-MyZoo6=""
-MyZooA=""
-MyZooB=""
+MySummer1=""
+MySummer2=""
+MySummer3=""
+MySummer4=""
+MySummer5=""
+MySummer6=""
+MySummerA=""
+MySummerB=""
 
-ForOtherZoo1=""
-ForOtherZoo2=""
-ForOtherZoo3=""
-ForOtherZoo4=""
-ForOtherZoo5=""
-ForOtherZoo6=""
+
+ForOtherSummer1=""
+ForOtherSummer2=""
+ForOtherSummer3=""
+ForOtherSummer4=""
+ForOtherSummer5=""
+ForOtherSummer6=""
+
 
 ################################## 定义jd_health互助（临时） ##################################
 ## 具体填法及要求详见本文件最下方“互助码填法示例”
@@ -432,30 +466,90 @@ ForOtherCfd4=""
 ForOtherCfd5=""
 ForOtherCfd6=""
 
+################################## 定义jd_City活动互助（选填） ##################################
+## 具体填法及要求详见本文件最下方“互助码填法示例”
+MyCity1=""
+MyCity2=""
+MyCity3=""
+MyCity4=""
+MyCity5=""
+MyCity6=""
+MyCityA=""
+MyCityB=""
 
+ForOtherCity1=""
+ForOtherCity2=""
+ForOtherCity3=""
+ForOtherCity4=""
+ForOtherCity5=""
+ForOtherCity6=""
+
+################################## 定义jd_ddwj_exchange兑换京豆数量（选填） ##################################
+## 可填的数字为：0,200,500,1000，0或者不填代表不兑换，其余数字即为兑换数量（默认换1000）
+export BeansCount="1000"
 
 ################################## 定义jd_try相关参数（选填） ##################################
 
-##控制每次获取商品数量，默认12
-export JD_TRY_PAGE_SIZE=""
+##控制jd_try启停，true启用，false停用
+export JD_TRY="false"
 
-##商品分类，以 @ 隔开，示例：家用电器@手机数码@电脑办公@家居家装
-export JD_TRY_CIDS_KEYS=""
+##控制每次获取商品数量，默认50建议使用默认
+export JD_TRY_MAXLENGTH="50"
 
-##试用类型，以 @ 隔开，示例：免费试用@闪电试
-export JD_TRY_TYPE_KEYS=""
+##获取试用商品类型，默认为1
+#1 - 精选
+#2 - 闪电试
+#3 - 家用电器(可能会有变化)
+#4 - 手机数码(可能会有变化)
+#5 - 电脑办公(可能会有变化)
+#用@分隔，例如若申请1 3 5品类则填写为"1@3@5"，默认1 3 4 5
+export JD_TRY_TABID="1@3@4@5"
 
 ##过滤试用商品关键字，以 @ 隔开(默认内置了很多关键字，建议使用默认)
-export JD_TRY_GOOD_FILTERS=""
+export JD_TRY_TITLEFILTERS=""
 
-##试用商品最低价格
-export JD_TRY_MIN_PRICE=""
+##商品原价，低于这个价格都不会试用，意思是
+##A商品原价49元，试用价1元，如果下面设置为50，那么A商品不会被加入到待提交的试用组
+##B商品原价99元，试用价0元，如果下面设置为50，那么B商品将会被加入到待提交的试用组
+##默认为70
+export JD_TRY_PRICE="70"
+
+
+##试用价格(中了要花多少钱)，高于这个价格都不会试用，小于等于才会试用，意思就是
+##A商品原价49元，现在试用价1元，如果下面设置为10，那A商品将会被添加到待提交试用组，因为1 < 10
+##B商品原价49元，现在试用价2元，如果下面设置为1，那B商品将不会被添加到待提交试用组，因为2 > 1
+##C商品原价49元，现在试用价1元，如果下面设置为1，那C商品也会被添加到带提交试用组，因为1 = 1
+##默认为70
+export JD_TRY_TRIALPRICE="70"
+
 
 ##试用商品最多提供数量（过滤垃圾商品）
-export JD_TRY_MAX_SUPPLY_COUNT=""
+#最小提供数量，例如试用商品只提供2份试用资格，当前设置为1，则会进行申请
+#若只提供5份试用资格，当前设置为10，则不会申请
+export JD_TRY_MINSUPPLYNUM="1"
+
+##试用商品已申请人数限制
+#过滤大于设定值的已申请人数，例如默认设置的10000，A商品已经有10001人申请了，则A商品不会进行申请，会被跳过
+export JD_TRY_APPLYNUMFILTER="10000"
 
 
+##商品数组的最大长度，通俗来说就是即将申请的商品队列长度
+##例如设置为20，当第一次获取后获得12件，过滤后剩下5件，将会进行第二次获取，过滤后加上第一次剩余件数
+##例如是18件，将会进行第三次获取，直到过滤完毕后为20件才会停止，不建议设置太大
+##默认 50 
+export JD_TRY_MAXLENGTH="50"
 
+##过滤种草官类试用，某些试用商品是专属官专属，考虑到部分账号不是种草官账号
+##例如A商品是种草官专属试用商品，下面设置为true，而你又不是种草官账号，那A商品将不会被添加到待提交试用组
+##例如B商品是种草官专属试用商品，下面设置为false，而你是种草官账号，那A商品将会被添加到待提交试用组
+##例如B商品是种草官专属试用商品，下面设置为true，即使你是种草官账号，A商品也不会被添加到待提交试用组
+##默认为true
+export JD_TRY_PASSZC="true"
+
+
+##每多少个账号发送一次通知，默认为4
+##可通过环境变量控制 JD_TRY_SENDNUM
+export JD_TRY_SENDNUM="4"
 
 ################################## 定义京喜工厂开团ID（选填） ##################################
 ## 京喜工厂拼团瓜分电力活动的`activeId`默认读取内置的如出现脚本开团提示失败：`活动已结束，请稍后再试~`，可自行抓包替换(开启抓包，进入拼团瓜分电力页面，寻找带有`tuan`的链接里面的`activeId=`)
@@ -508,6 +602,9 @@ export FRUIT_NOTIFY_CONTROL=""
 ## 如需切换为换豆（不浇水），请修改为 "true"
 export FRUIT_BEAN_CARD=""
 
+################################## 定义jd_fruit是否再次浇水（选填） ##################################
+## 默认执行再次浇水，如想一直攒着水滴攒一年几万滴，可以改为true不执行再次浇水，攒水滴
+export DO_TEN_WATER_AGAIN=""
 
 ################################## 定义jd_joy喂食克数（选填） ##################################
 ## 你期望的jd_joy每次喂食克数，只能填入10、20、40、80，默认为10
@@ -558,7 +655,7 @@ export JOY_RUN_NOTIFY=""
 
 ################################## 定义jd_moneyTree是否自动将金果卖出变成金币（选填） ##################################
 ## 金币有时效，默认为 "false"，不卖出金果为金币，如想希望自动卖出，请修改为 "true"
-export MONEY_TREE_SELL_FRUIT=""
+export MONEY_Tree_SELL_FRUIT=""
 
 
 ################################## 定义jd_pet是否静默运行（选填） ##################################
@@ -622,6 +719,12 @@ export CASH_NOTIFY_CONTROL=""
 ## 控制jd_jdzz是否静默运行，false 为否(发送推送通知消息)，true 为是(即：不发送推送通知消息)
 export JDZZ_NOTIFY_CONTROL=""
 
+
+################################## 定义星系牧场是否兑换 ##################################
+##星系牧场 兑换京豆默认false不兑换，需要兑换请改为true##
+export Cowexchange=""
+
+
 ################################## 定义取关参数（选填） ##################################
 ## jd_unsubscribe这个任务是用来取关每天做任务关注的商品和店铺，默认在每次运行时取关20个商品和20个店铺
 ## 如果取关数量不够，可以根据情况增加，还可以设置 jdUnsubscribeStopGoods 和 jdUnsubscribeStopShop 
@@ -682,15 +785,15 @@ EnableExtraShell=""
 ## **实际上jd_fruit一个账号只能给别人助力3次，我多写的话，只有前几个会被助力。但如果前面的账号获得的助力次数已经达到上限了，那么还是会尝试继续给余下的账号助力，所以多填也是有意义的。**
 ## **ForOther系列变量必须从1开始编号，依次编下去。**
 
-# MyFruit1="e6e04602d5e343258873af1651b603ec"  # 这是Cookie1这个账号的互助码
-# MyFruit2="52801b06ce2a462f95e1d59d7e856ef4"  # 这是Cookie2这个账号的互助码
-# MyFruit3="e2fd1311229146cc9507528d0b054da8"  # 这是Cookie3这个账号的互助码
-# MyFruit4="6dc9461f662d490991a31b798f624128"  # 这是Cookie4这个账号的互助码
-# MyFruit5="30f29addd75d44e88fb452bbfe9f2110"  # 这是Cookie5这个账号的互助码
-# MyFruit6="1d02fc9e0e574b4fa928e84cb1c5e70b"  # 这是Cookie6这个账号的互助码
-# MyFruitA="5bc73a365ff74a559bdee785ea97fcc5"  # 这是我和别人交换互助，另外一个用户A的互助码
-# MyFruitB="6d402dcfae1043fba7b519e0d6579a6f"  # 这是我和别人交换互助，另外一个用户B的互助码
-# MyFruitC="5efc7fdbb8e0436f8694c4c393359576"  # 这是我和别人交换互助，另外一个用户C的互助码
+# MyFruit1="1"  # 这是Cookie1这个账号的互助码
+# MyFruit2="2"  # 这是Cookie2这个账号的互助码
+# MyFruit3="3"  # 这是Cookie3这个账号的互助码
+# MyFruit4="4"  # 这是Cookie4这个账号的互助码
+# MyFruit5="5"  # 这是Cookie5这个账号的互助码
+# MyFruit6="6"  # 这是Cookie6这个账号的互助码
+# MyFruitA="7"  # 这是我和别人交换互助，另外一个用户A的互助码
+# MyFruitB="8"  # 这是我和别人交换互助，另外一个用户B的互助码
+# MyFruitC="9"  # 这是我和别人交换互助，另外一个用户C的互助码
 
 # ForOtherFruit1="${MyFruit2}@${MyFruitB}@${MyFruit4}"   # Cookie1这个账号助力Cookie2的账号的账号、Cookie4的账号以及用户B
 # ForOtherFruit2="${MyFruit1}@${MyFruitA}@${MyFruit4}"   # Cookie2这个账号助力Cookie1的账号的账号、Cookie4的账号以及用户A
