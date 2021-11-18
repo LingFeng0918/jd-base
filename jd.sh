@@ -503,20 +503,6 @@ gen_pt_pin_array() {
     done
 }
 
-IsPinValid() {
-    local j
-    [ -f $file_cookie ] && . $file_cookie
-    count_user_sum
-    gen_pt_pin_array
-
-    [[ ! -s $file_key ]] && wget -q https://gitee.com/highdimen/js_tool/raw/A1/resource/encrypto/JD_PIN.key -O $file_key && sha1sum $file_key >$file_key_cry
-    ## [[ -z $(grep -w $file_key_Hash $file_key_cry) ]] >/dev/null 2>&1 && rm -rf $file_key && rm -rf $file_key_cry && echo "密钥错误" && exit 0
-    for ((j = 0; j <= $user_sum - 1; j++)); do
-        [ -z $(grep -w ${pt_pin_test[j]} $dir_config/.key) ] >/dev/null 2>&1 && rm -rf $file_key && echo "您的第$(($j + 1))个账号：${pt_pin[j]} 未经授权" && exit 0
-        ## [ -z $(grep -w $(echo -n "${pt_pin[j]}" | sha1sum | cut -f1 -d ' ') $dir_config/.key) ] >/dev/null 2>&1 && rm -rf $file_key && echo "您的第$(($j + 1))个账号：${pt_pin[j]} 未经授权" && exit 0
-    done
-}
-
 ## 导出互助码的通用程序，$1：去掉后缀的脚本名称，$2：config.sh中的后缀，$3：活动中文名称
 export_codes_sub() {
     local task_name=$1
@@ -790,18 +776,18 @@ git_pull_scripts() {
 }
 
 ## 克隆scripts2
-function Git_CloneScripts2 {
-    git clone -b master https://gitee.com/lingfeng168/jd_scripts.git ${dir_scripts2} >/dev/null 2>&1
-    ExitStatusScripts2=$?
-}
+#function Git_CloneScripts2 {
+#    git clone -b master https://gitee.com/lingfeng168/jd_scripts.git ${dir_scripts2} >/dev/null 2>&1
+#    ExitStatusScripts2=$?
+#}
 
 ## 更新scripts2
-function Git_PullScripts2 {
-    cd ${dir_scripts2}
-    git fetch --all >/dev/null 2>&1
-    ExitStatusScripts2=$?
-    git reset --hard origin/master >/dev/null 2>&1
-}
+#function Git_PullScripts2 {
+#    cd ${dir_scripts2}
+#    git fetch --all >/dev/null 2>&1
+#    ExitStatusScripts2=$?
+#    git reset --hard origin/master >/dev/null 2>&1
+#}
 ## 同步定时清单
 function Update_Crontab() {
     if [[ $(cat $list_crontab_user) != $(crontab -l) ]]; then
@@ -1247,8 +1233,7 @@ UpdateTool() {
     git config --global pull.rebase false
     git config --global --unset http.proxy
     ## 导入配置文件，清除缓存
-    import_config_no_check
-    #IsPinValid
+    import_config_no_chec
     ## 在日志中记录时间与路径
     echo "
 --------------------------------------------------------------
@@ -1963,7 +1948,6 @@ link_shell
 define_cmd
 #detect_software
 
-#[ -f $file_cookie ] && IsPinValid
 ## 命令检测
 case $# in
 0)
