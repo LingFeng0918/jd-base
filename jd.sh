@@ -1233,7 +1233,7 @@ UpdateTool() {
     git config --global pull.rebase false
     git config --global --unset http.proxy
     ## 导入配置文件，清除缓存
-    import_config_no_chec
+    import_config_no_check
     ## 在日志中记录时间与路径
     echo "
 --------------------------------------------------------------
