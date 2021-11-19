@@ -7,7 +7,7 @@ echo -e "\n======================== 2. 更新源代码 ========================\
 jd update
 echo
 
-crontab /jd/config/crontab.list
+crontab /root/jd/config/crontab.list
 
 jd panelon
 jd panelon
