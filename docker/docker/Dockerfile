@@ -8,7 +8,7 @@ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     LANG=zh_CN.UTF-8 \
     SHELL=/bin/bash \
     PS1='\u@\h:\w $ ' \
-    JD_DIR=/root/jd \
+    JD_DIR=/jd \
     ENABLE_TG_BOT=false \
     ENABLE_WEB_PANEL=true
 WORKDIR $JD_DIR
