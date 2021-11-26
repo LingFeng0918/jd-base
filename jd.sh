@@ -17,8 +17,8 @@ PanelReboot=0
 PanelPort=5678
 CodeTable=(a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9)
 ## 链接
-url_shell=${JD_SHELL_URL:-https://gitee.com/lingfeng168/jd-base.git}
-url_scripts=${JD_SCRIPTS_URL:-https://gitee.com/lingfeng168/jd_scripts.git}
+url_shell=${JD_SHELL_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git}
+url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
 
 ## 目录
 ##dir_shell=${JD_DIR:-$(cd $(dirname $0); pwd)}
@@ -777,7 +777,7 @@ git_pull_scripts() {
 
 ## 克隆scripts2
 #function Git_CloneScripts2 {
-#    git clone -b master https://gitee.com/lingfeng168/jd_scripts.git ${dir_scripts2} >/dev/null 2>&1
+#    git clone -b master https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git ${dir_scripts2} >/dev/null 2>&1
 #    ExitStatusScripts2=$?
 #}
 
@@ -1285,7 +1285,7 @@ thirdpard脚本目录：$dir_thirdpard
         rm -rf $dir_scripts
     fi
 
-    url_scripts=${JD_SCRIPTS_URL:-https://gitee.com/lingfeng168/jd_scripts.git}
+    url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
     branch_scripts=${JD_SCRIPTS_BRANCH:-master}
     ## 更新或克隆scripts
     if [ -d $dir_scripts/.git ]; then

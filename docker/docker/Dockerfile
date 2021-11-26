@@ -2,7 +2,7 @@ FROM node:lts-alpine
 LABEL maintainer="LingFeng0918"
 ARG REPO=gitee
 ARG REPO_URL=$REPO.com
-ARG JS_TOOL_URL=https://gitee.com/lingfeng168/jd-base.git
+ARG JS_TOOL_URL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git
 ARG JS_TOOL_BRANCH=A1
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     LANG=zh_CN.UTF-8 \
