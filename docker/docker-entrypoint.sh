@@ -14,8 +14,8 @@ file_config_user="$dir_config/config.sh"
 file_cookie="$dir_config/cookie.sh"
 file_auth_sample="$dir_sample/auth.sample.json"
 file_auth_user="$dir_config/auth.json"
-#file_bot_sample="$JD_DIR/bot/bot.py"
-#file_bot_user="$dir_config/bot.py"
+file_bot_sample="$JD_DIR/bot/bot.py"
+file_bot_user="$dir_config/bot.py"
 file_bot_setting_sample="$dir_sample/bot.sample.json"
 file_bot_setting_user="$dir_config/bot.json"
 
@@ -33,10 +33,10 @@ if [ ! -d $dir_own ]; then
     mkdir -p $dir_own
 fi
 
-echo -e "\n======================== 2. 更新源代码 ========================\n"
-jup shell
-jup scripts
-echo
+ echo -e "\n======================== 2. 更新源代码 ========================\n"
+ bash jup shell
+ bash jup scripts
+ echo
 
 echo -e "======================== 3. 检测配置文件 ========================\n"
 if [ -s $file_crontab_user ]; then
@@ -58,7 +58,7 @@ fi
 
 if [ ! -s $file_auth_user ]; then
     echo -e "检测到 $file_auth_user 不存在，从示例文件复制一份用于初始化...\n"
-    cp -fv $file_auth_sample $file_auth_user
+    cp -fv $file_auth_sample $file_auth_user 
     echo
 fi
 
@@ -104,7 +104,7 @@ if [[ $ENABLE_WEB_PANEL == true ]]; then
         cd ${JD_DIR}/panel
         if type pm2 >/dev/null 2>&1; then
            [[ $ttyd_status -eq 0 ]] && pm2 start /usr/local/bin/ttyd --name="ttyd" -- -t fontSize=14 -t disableLeaveAlert=true -t rendererType=webgl bash
-
+           
         else
            [[ $ttyd_status -eq 0 ]] && nohup /usr/local/bin/ttyd -t fontSize=14 -t disableLeaveAlert=true -t rendererType=webgl bash >/dev/null 2>&1 &
            nohup node server.js >/dev/null 2>&1 &
@@ -125,9 +125,11 @@ echo -e "======================== 6. 启动控制面板 ========================
 if [[ $ENABLE_WEB_PANEL == true ]]; then
     cd ${JD_DIR}/panel
     pm2 start ecosystem.config.js
+    cd ${JD_DIR}/app
+    pm2 start index.js
     if [[ $? -eq 0 ]]; then
         echo -e "控制面板启动成功...\n"
-        echo -e "如未修改用户名密码，则初始用户名为：admin，初始密码为：adminadmin\n"
+        echo -e "如未修改用户名密码，则初始用户名为：admin，初始密码为：password\n"
         echo -e "请访问 http://<ip>:5678 登陆并修改配置...\n"
     else
         echo -e "控制面板启动失败，但容器将继续启动...\n"
