@@ -1,7 +1,7 @@
-    FROM node:lts-alpine
-    ARG JD_SHELL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git
-    ARG JD_SHELL_BRANCH=v4
-    ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+FROM node:15.9.0-alpine3.12
+ARG JD_SHELL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git
+ARG JD_SHELL_BRANCH=v4
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
         LANG=zh_CN.UTF-8 \
         SHELL=/bin/bash \
         PS1="\u@\h:\w \$ " \
@@ -12,8 +12,8 @@
         ENABLE_RESET_REPO_URL=true \
         JD_SHELL_URL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git \
         JD_SCRIPTS_URL=https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git
-	WORKDIR ${JD_DIR}
-    RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+WORKDIR ${JD_DIR}
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
         && apk update -f \
         && apk upgrade \
         && apk --no-cache add -f bash \
@@ -39,6 +39,7 @@
         && git clone -b ${JD_SHELL_BRANCH} ${JD_SHELL} ${JD_DIR} \
 		&& git config --global user.email "LingFeng0918@@users.noreply.github.com" \
 		&& git config --global user.name "LingFeng0918" \
+		&& cd ${JD_DIR}/panel \
         && npm install \
         && npm install -g pm2 \
         && ln -sf ${JD_DIR}/jup.sh /usr/local/bin/jd \
@@ -60,18 +61,23 @@
         && chmod 777 /usr/local/bin/docker-entrypoint.sh \
         && chmod 777 ${JD_DIR}/*.sh \
         && rm -rf /root/.npm \
-	&& apk del .build \
+        && apk del .build \
         && rm -rf /root/.cache \
-	&&  npm i -g ttyd \
-	&& npm i -S png-js \
+        && npm i -g ttyd \
+        && npm i -S png-js \
+        && npm i -S jsdom \
+        && npm i -S date-fns \
+        && npm i -S axios \
+        && npm i -S crypto-js \
+        && npm i -S ts-md5 \
+        && npm i -S tslib \
+        && npm i -S @types/node \
+        && npm i -S requests \
+        && npm i -S moment \
         && npm i -g cnpm \
         && cnpm i \
         && cnpm i -g typescript  \
-        && cnpm i -g ts-node \   
+        && cnpm i -g ts-node \
         && pip3 install requests
-	WORKDIR ${JD_DIR}/app
-    RUN yarn
-    EXPOSE 6789
-    CMD [ "node", "index.js" ]
-    WORKDIR ${JD_DIR}
-    ENTRYPOINT ["docker-entrypoint.sh"]
+WORKDIR ${JD_DIR}
+ENTRYPOINT ["docker-entrypoint.sh"]
