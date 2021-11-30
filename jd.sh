@@ -21,8 +21,8 @@ url_shell=${JD_SHELL_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd
 url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
 
 ## 目录
-##dir_shell=${JD_DIR:-$(cd $(dirname $0); pwd)}
-dir_shell=$(dirname $(readlink -f "$0"))
+dir_shell=${JD_DIR:-$(cd $(dirname $0); pwd)}
+##dir_shell=$(dirname $(readlink -f "$0"))
 fix_dir_shell=$(dirname $dir_shell)
 [[ -x "$(dirname $dir_shell)/jd.sh" ]] && dir_shell=$fix_dir_shell
 dir_root=$dir_shell
