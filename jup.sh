@@ -501,8 +501,8 @@ update_scripts () {
          rm -rf $dir_scripts
     fi
 
-    url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
-    branch_scripts=${JD_SCRIPTS_BRANCH:-master}
+    url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/LF_JD.git}
+    branch_scripts=${JD_SCRIPTS_BRANCH:-main}
 
     ## 更新或克隆scripts
     if [ -d $dir_scripts/.git ]; then
