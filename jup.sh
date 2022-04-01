@@ -5,7 +5,7 @@
 dir_shell=${JD_DIR:-$(cd $(dirname $0); pwd)}
 dir_root=$dir_shell
 url_shell=${JD_SHELL_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git}
-url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/jd_scripts.git}
+url_scripts=${JD_SCRIPTS_URL:-https://ghproxy.com/https://github.com/LingFeng0918/LF_JD.git}
 send_mark=$dir_shell/send_mark
 
 ## 导入通用变量与函数
