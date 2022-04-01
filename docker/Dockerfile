@@ -1,7 +1,7 @@
 FROM node:lts-alpine
-ARG JD_BASE_URL=https://ghproxy.com/https://github.com/LingFeng0918/jd-base.git
+ARG JD_BASE_URL=https://gh.fakev.cn/LingFeng0918/jd-base.git
 ARG JD_BASE_BRANCH=main
-ARG JD_SCRIPTS_URL=https://ghproxy.com/https://github.com/LingFeng0918/LF_JD.git
+ARG JD_SCRIPTS_URL=https://gh.fakev.cn/LingFeng0918/LF_JD.git
 ARG JD_SCRIPTS_BRANCH=main
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     LANG=zh_CN.UTF-8 \
